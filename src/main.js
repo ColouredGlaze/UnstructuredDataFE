@@ -4,7 +4,9 @@ import Vue from 'vue'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import App from './App.vue'
-import router from './router'
+import router from './router/indexRouter'
+import Icon from 'vue-svg-icon/Icon.vue'
+Vue.component('icon', Icon)
 
 Vue.use(ElementUI, { size: 'medium' })
 
@@ -17,3 +19,5 @@ new Vue({
   template: '<App/>',
   components: { App }
 })
+
+router.push('/login')
