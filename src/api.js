@@ -17,10 +17,15 @@ axios.interceptors.request.use(config => {
   return Promise.reject(error)
 })
 // http 响应拦截
-axios.interceptors.response.use(response => response, error => Promise.resolve(error.response))
+axios.interceptors.response.use(response => {
+  loadinginstace.close()
+  return response
+}, error => {
+  loadinginstace.close()
+  return Promise.resolve(error.response)
+})
 
 function checkStatus (response) {
-  loadinginstace.close()
   // 判断是不是网络出错
   if (response.status === 200 || response.status === 304) {
     // 正常访问连接

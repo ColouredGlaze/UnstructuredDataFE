@@ -16,6 +16,10 @@
         <el-menu-item index="/main/digitalDictionary">数据字典</el-menu-item>
         <el-menu-item index="1-3">登录日志</el-menu-item>
       </el-submenu>
+      <el-menu-item index="/main/userManage">
+        <i class="icon-menu-item"><icon name="userManage" scale="2"></icon></i>
+        <span slot="title">用户管理</span>
+      </el-menu-item>
     </el-menu>
   </div>
   <div class="main-container">
@@ -45,6 +49,19 @@ export default {
 </script>
 
 <style scoped>
+.icon-menu-item{
+  vertical-align: middle;
+  margin-right: 5px;
+  width: 24px;
+  text-align: center;
+  font-size: 18px;
+  font-family:element-icons!important;
+  font-weight: 400;
+  font-variant: normal;
+  line-height: 1;
+  display: inline-block;
+  -webkit-font-smoothing: antialiased;
+}
 .main-container{
   margin-left: 230px;
 }

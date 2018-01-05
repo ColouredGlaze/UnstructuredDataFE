@@ -9,7 +9,6 @@ import Icon from 'vue-svg-icon/Icon.vue'
 import api from './api'
 
 Vue.prototype.api = api
-
 Vue.component('icon', Icon)
 Vue.use(ElementUI, { size: 'medium' })
 
@@ -24,6 +23,8 @@ new Vue({
 })
 
 router.beforeEach((to, from, next) => {
+  // const result = this.api.post('/getUid')
+  // console.log(result)
   console.log(to.path)
   console.log(from.path)
   next()
