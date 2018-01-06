@@ -2,9 +2,9 @@
   <div class="digital-dictionary">
     <el-row>
       <el-col :span="6">
-        <el-form ref="addDigitalDictionaryForm" :model="searchDigitalDictionary" :inline="true">
+        <el-form ref="searchUserInfoForm" :model="searchUserInfo" :inline="true">
           <el-form-item label="关键词：">
-            <el-input v-model="searchDigitalDictionary.keyWord"></el-input>
+            <el-input v-model="searchUserInfo.keyWord"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button @click="searchByKeyWord" type="primary" icon="el-icon-search">搜 索</el-button>
@@ -13,28 +13,26 @@
       </el-col>
       <el-col :span="18" style="text-align: right;">
         <el-button @click="newDialogVisible = true" type="primary" icon="el-icon-edit">新增管理员</el-button>
-        <el-button @click="deleteDigitalDictionary" type="primary" icon="el-icon-delete">删除用户/管理员</el-button>
+        <el-button @click="deleteUserInfo" type="primary" icon="el-icon-delete">删除用户/管理员</el-button>
+        <el-button @click="freeze" type="primary">冻结帐号</el-button>
+        <el-button @click="unfreeze" type="primary">解冻账号</el-button>
+        <el-button @click="resetPassword" type="primary">重置密码</el-button>
       </el-col>
     </el-row>
     <div class="table-container">
       <el-table :data="tableData" ref="tableData" style="width: 100%" max-height="730" @select="tableSelect" @select-all="tableSelect" border stripe>
         <el-table-column type="selection"></el-table-column>
-        <el-table-column prop="" label="用户类型"></el-table-column>
-        <el-table-column prop="id" label="用户名" ></el-table-column>
-        <el-table-column prop="code" label="性别"></el-table-column>
-        <el-table-column prop="description" label="职业"></el-table-column>
-        <el-table-column prop="designation" label="邮箱"></el-table-column>
+        <el-table-column prop="userType" label="用户类型"></el-table-column>
+        <el-table-column prop="userName" label="用户名" ></el-table-column>
+        <el-table-column prop="sex" label="性别"></el-table-column>
+        <el-table-column prop="profession" label="职业"></el-table-column>
+        <el-table-column prop="email" label="邮箱" show-overflow-tooltip></el-table-column>
         <el-table-column prop="addressCode" label="地址"></el-table-column>
-        <el-table-column prop="parentCode" label="电话号码"></el-table-column>
-        <el-table-column prop="creator" label="账户状态"></el-table-column>
-        <el-table-column prop="createTime" label="个人简介" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="registerTime" label="注册时间"></el-table-column>
-        <el-table-column prop="" label=""></el-table-column>
-        <el-table-column label="编辑" width="100">
-          <template slot-scope="scope">
-            <el-button @click="modify(scope.row)" type="primary">修 改</el-button>
-          </template>
-        </el-table-column>
+        <el-table-column prop="phoneNumber" label="电话号码"></el-table-column>
+        <el-table-column prop="status" label="账户状态"></el-table-column>
+        <el-table-column prop="description" label="个人简介" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="birthday" label="出生日期" show-overflow-tooltip></el-table-column>        
+        <el-table-column prop="registerTime" label="注册时间" show-overflow-tooltip></el-table-column>
       </el-table>
     </div>
     <div class="pagination-container">
@@ -49,56 +47,65 @@
           :total="totalQuantity">
         </el-pagination>
     </div>
-    <el-dialog title="新增数据字典" :visible.sync="newDialogVisible" width="30%" center>
-      <el-form :model="newDigitalDictionary" ref="newDigitalDictionary" :rules="digitalDictionaryRules" label-width="70px" >
-        <el-form-item label="名称" prop="designation">
-          <el-input v-model="newDigitalDictionary.designation" placeholder="请输入数据字典的名称"></el-input>
-        </el-form-item>
-        <el-form-item label="父类编码" prop="parentCode">
-          <el-input v-model="newDigitalDictionary.parentCode" placeholder="请选择父类编码" :disabled="true">
-            <el-button @click="chooseParentCodeDialogVisible = true" slot="append" icon="el-icon-search"></el-button>
-          </el-input>
-        </el-form-item>
-        <el-form-item label="编码" prop="code">
-          <el-input v-model="newDigitalDictionary.code" placeholder="请输入编码"></el-input>
-        </el-form-item>
-        <el-form-item label="描述" prop="description">
-          <el-input v-model="newDigitalDictionary.description" placeholder="请描述该数据字典" type="textarea" :rows="3"></el-input>
+    <el-dialog title="新增管理员" :visible.sync="newDialogVisible" width="36%" center>
+      <el-form :model="newUserInfoForm" ref="newUserInfoForm" :rules="userInfoRules" label-width="70px" >
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="用户名 " prop="userName">
+              <el-input v-model="newUserInfoForm.userName" placeholder="请输入用户名"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="密　码 " prop="userPassword">
+              <el-input v-model="newUserInfoForm.userPassword" placeholder="请输入密码" type="password"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">          
+            <el-form-item label="性　别 ">
+              <el-radio v-for="item in sexs" :key="item.code" v-model="newUserInfoForm.sex" :label="item.code">{{item.designation}}</el-radio>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="邮　箱 " prop="email">
+              <el-input v-model="newUserInfoForm.email" placeholder="请输入邮箱地址"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="职　业 " prop="profession">
+              <el-select v-model="newUserInfoForm.profession">
+                <el-option v-for="item in professions" placeholder="请选择职业" :key="item.code" :label="item.designation" :value="item.code"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="住　址 " prop="addressCode">
+              <el-input v-model="newUserInfoForm.addressCode" placeholder="请选择住址"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="出生日期" prop="birthday">
+              <el-date-picker v-model="newUserInfoForm.birthday" placeholder="选择日期" ></el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="电　话 " prop="phoneNumber" >
+              <el-input v-model="newUserInfoForm.phoneNumber" placeholder="请输入电话号码"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-form-item label="个人简介" prop="description" >
+          <el-input v-model="newUserInfoForm.description" placeholder="介绍一下管理员吧！" type="textarea" :autosize="{ minRows: 3, maxRows: 5}"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer">
         <el-button @click="newDialogVisible = false">取 消</el-button>
-        <el-button @click="addDigitalDictionary" type="primary">确 定</el-button>
-      </span>
-    </el-dialog>
-
-    <el-dialog title="修改数据字典" :visible.sync="modifyDialogVisible" width="30%" center>
-      <el-form :model="modifyDigitalDictionary" ref="modifyDigitalDictionary" :rules="digitalDictionaryRules" label-width="70px" >
-        <el-form-item label="名称" prop="designation">
-          <el-input v-model="modifyDigitalDictionary.designation" placeholder="请输入数据字典的名称"></el-input>
-        </el-form-item>
-        <el-form-item label="父类编码" prop="parentCode">
-          <el-input v-model="modifyDigitalDictionary.parentCode" placeholder="请选择父类编码" :disabled="true">
-            <el-button @click="chooseParentCodeDialogVisible = true" slot="append" icon="el-icon-search"></el-button>
-          </el-input>
-        </el-form-item>
-        <el-form-item label="编码" prop="code">
-          <el-input v-model="modifyDigitalDictionary.code" placeholder="请输入编码"></el-input>
-        </el-form-item>
-        <el-form-item label="描述" prop="description">
-          <el-input v-model="modifyDigitalDictionary.description" placeholder="请描述该数据字典" type="textarea" :rows="3"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer">
-        <el-button @click="modifyDialogVisible = false">取 消</el-button>
-        <el-button @click="alertDigitalDictionary" type="primary">确 定</el-button>
-      </span>
-    </el-dialog>
-
-    <el-dialog title="选择父级数据字典" :visible.sync="chooseParentCodeDialogVisible" width="30%" center>
-      <el-tree :props="treeProps" :load="loadParentCode" @node-click="chooseParentCode" lazy ></el-tree>
-      <span slot="footer">
-        <el-button @click="confirmParentCode" type="primary">确 定</el-button>
+        <el-button @click="addUserInfo" type="primary">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -106,107 +113,165 @@
 </template>
 
 <script>
+import { validatAlphabets } from '@/utils/validate'
+
 export default {
-  name: 'DigitalDictionary',
+  name: 'UserInfo',
   data () {
+    const validatePassword = (rule, value, callback) => {
+      if (!validatAlphabets(value)) {
+        callback(new Error('只能包含大小写字母'))
+      } else {
+        callback()
+      }
+    }
     return {
-      deleteData: [],
-      treeProps: {
-        label: 'designation'
-      },
-      modifyDigitalDictionary: {},
-      newDigitalDictionary: {
-        designation: '',
-        parentCode: '',
-        code: '',
+      selectData: [],
+      newUserInfoForm: {
+        userName: '',
+        userPassword: '',
+        sex: '',
+        birthday: '',
+        phoneNumber: '',
+        email: '',
+        addressCode: '',
+        profession: '',
         description: ''
       },
       tableData: [],
-      searchDigitalDictionary: {
+      searchUserInfo: {
         keyWord: ''
       },
-      digitalDictionaryRules: {
-        designation: [
-          {required: true, message: '数据字典名称不能为空', trigger: 'blur'},
-          {min: 1, max: 32, message: '长度在 1 到 32 个字符', trigger: 'blur'}
+      userInfoRules: {
+        userName: [
+          {required: true, trigger: 'change', message: '请输入用户名'},
+          {min: 3, max: 5, trigger: 'change', message: '长度在 3 到 8 个字符'}
         ],
-        code: [
-          {required: true, message: '编码不能为空', trigger: 'blur'},
-          {min: 1, max: 6, message: '长度在 1 到 6 个字符', trigger: 'blur'}
+        userPassword: [
+          {required: true, trigger: 'change', message: '请输入密码'},
+          {trigger: 'change', validator: validatePassword},
+          {min: 6, max: 16, trigger: 'change', message: '长度在 6 到 16 个字符'}
         ],
-        description: [
-          {max: 100, message: '长度在 100 个字符以内', trigger: ''}
+        email: [
+          {required: true, trigger: 'change', message: '请输入邮箱'},
+          {type: 'email', trigger: 'change', message: '请输入正确的邮箱地址'}
+        ],
+        profession: [
+          {required: true, trigger: 'change', message: '请选择职业'}
+        ],
+        addressCode: [
+          {required: true, trigger: 'change', message: '请选择地址'}
         ]
       },
+      professions: [],
+      sexs: [],
       newDialogVisible: false,
-      modifyDialogVisible: false,
-      chooseParentCodeDialogVisible: false,
       currentPage: 1,
       pageSize: 12,
       totalQuantity: 0
     }
   },
   methods: {
-    deleteDigitalDictionary () {
-      this.$confirm('确定要删除当前选中的 ' + this.deleteData.length + ' 个用户吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(async () => {
-        await this.api.post('/DigitalDictionaryApi/delete', this.deleteData)
-      }).then(() => {
-        this.getTableDate()
-      })
+    freeze () {
+      if (this.selectData.length === 0) {
+        this.$message.info('请选择要冻结的用户')
+        for (let i = 0; i < this.selectData.length; i++) {
+          if (this.selectData[i].status !== '正常') {
+            this.$message('请选择账户状态为 正常 的用户')
+            return
+          }
+        }
+      } else {
+        this.$confirm('确定要冻结当前选中的 ' + this.selectData.length + ' 个用户吗？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async () => {
+          await this.api.post('/UserInfoApi/freeze', this.selectData)
+        }).then(() => {
+          this.getTableDate()
+        })
+      }
+    },
+    unfreeze () {
+      if (this.selectData.length === 0) {
+        this.$message.info('请选择要解冻的用户')
+      } else {
+        for (let i = 0; i < this.selectData.length; i++) {
+          if (this.selectData[i].status !== '冻结') {
+            this.$message('请选择账户状态为 冻结 的用户')
+            return
+          }
+        }
+        this.$confirm('确定要解冻当前选中的 ' + this.selectData.length + ' 个用户吗？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async () => {
+          await this.api.post('/UserInfoApi/unfreeze', this.selectData)
+        }).then(() => {
+          this.getTableDate()
+        })
+      }
+    },
+    resetPassword () {
+      if (this.selectData.length === 0) {
+        this.$message.info('请选择要重置密码的用户')
+      } else {
+        this.$confirm('确定要重置选中的 ' + this.selectData.length + ' 个用户的密码吗？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async () => {
+          await this.api.post('/UserInfoApi/resetPassword', this.selectData)
+        }).then(() => {
+          this.getTableDate()
+        })
+      }
+    },
+    deleteUserInfo () {
+      if (this.selectData.length === 0) {
+        this.$message.info('请选择要删除的用户')
+      } else {
+        this.$confirm('确定要删除当前选中的 ' + this.selectData.length + ' 个用户吗？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async () => {
+          await this.api.post('/UserInfoApi/delete', this.selectData)
+        }).then(() => {
+          this.getTableDate()
+        })
+      }
     },
     tableSelect (selection) {
-      this.deleteData = selection
-    },
-    chooseParentCode (node) {
-      this.newDigitalDictionary.parentCode = node.code
-      this.modifyDigitalDictionary.parentCode = node.code
-    },
-    confirmParentCode () {
-      this.chooseParentCodeDialogVisible = false
+      this.selectData = selection
     },
     searchByKeyWord () {
       this.getTableDate()
     },
-    async loadParentCode (node, resolve) {
-      if (node.level === 0) {
-        const result = await this.api.post('/DigitalDictionaryApi/findChildrenForTree', {parentCode: ''})
-        resolve(result)
-      } else {
-        const result = await this.api.post('/DigitalDictionaryApi/findChildrenForTree', {parentCode: node.data.code})
-        resolve(result)
-      }
-    },
-    addDigitalDictionary () {
-      this.$refs['newDigitalDictionary'].validate(async (valid) => {
+    addUserInfo () {
+      this.$refs['newUserInfoForm'].validate(async (valid) => {
         if (valid) {
-          const result = await this.api.post('/DigitalDictionaryApi/save', this.newDigitalDictionary)
-          if (result !== null) {
-            this.newDialogVisible = false
-            this.getTableDate()
+          const passwordConfirmValidator = (value) => {
+            return value === this.newUserInfoForm.userPassword
           }
-          this.$refs['newDigitalDictionary'].resetFields()
+          // 重新输入密码进行确认
+          this.$prompt('确认密码', '密码：', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            inputValidator: passwordConfirmValidator,
+            inputErrorMessage: '输入的密码与设置的密码不一致'
+          }).then(async () => {
+            // 确认通过，注册用户信息
+            const result = await this.api.post('/UserInfoApi/addAdmin', this.newUserInfoForm)
+            if (result !== null) {
+              this.newDialogVisible = false
+              this.getTableDate()
+              this.$refs['newUserInfoForm'].resetFields()
+            }
+          })
         }
-      })
-    },
-    async modify (data) {
-      const result = await this.api.post('/DigitalDictionaryApi/findOneById', {id: data.id})
-      if (result !== null) {
-        this.modifyDialogVisible = true
-        this.modifyDigitalDictionary = result
-      }
-    },
-    async alertDigitalDictionary () {
-      this.$refs['modifyDigitalDictionary'].validate(async (valid) => {
-        if (valid) {
-          await this.api.post('/DigitalDictionaryApi/update', this.modifyDigitalDictionary)
-          this.modifyDialogVisible = false
-          this.getTableDate()
-        }
-        this.$refs['modifyDigitalDictionary'].resetFields()
       })
     },
     handleSizeChange (val) {
@@ -218,14 +283,31 @@ export default {
       this.getTableDate()
     },
     async getTableDate () {
-      const result = await this.api.post('/DigitalDictionaryApi/search',
-      {currentPage: this.currentPage, pageSize: this.pageSize, keyWord: this.searchDigitalDictionary.keyWord})
-      this.totalQuantity = result.totalElements
-      this.tableData = result.content
+      const result = await this.api.post('/UserInfoApi/search',
+      {currentPage: this.currentPage, pageSize: this.pageSize, keyWord: this.searchUserInfo.keyWord})
+      if (result !== null) {
+        this.totalQuantity = result.totalElements
+        this.tableData = result.content
+      }
+    },
+    // 初始化数据
+    async init () {
+      const sexResult = await this.api.post('/DigitalDictionaryApi/findChildrenForTree', {parentCode: '001'})
+      // 初始化性别选项
+      if (sexResult !== null) {
+        this.sexs = sexResult
+        this.newUserInfoForm.sex = this.sexs[0].code
+      }
+      // 初始化职业选项
+      const professionsResult = await this.api.post('/DigitalDictionaryApi/findChildrenForTree', {parentCode: '002'})
+      if (professionsResult !== null) {
+        this.professions = professionsResult
+      }
     }
   },
   mounted () {
     this.getTableDate()
+    this.init()
   }
 }
 </script>

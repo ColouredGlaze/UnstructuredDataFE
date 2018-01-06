@@ -77,9 +77,9 @@
               </el-col>
 
             </el-row>
-                <el-form-item label="个人简介" prop="description" >
-                  <el-input v-model="registerForm.description" placeholder="介绍一下你自己吧！" type="textarea" :autosize="{ minRows: 3, maxRows: 5}"></el-input>
-                </el-form-item>
+            <el-form-item label="个人简介" prop="description" >
+              <el-input v-model="registerForm.description" placeholder="介绍一下你自己吧！" type="textarea" :autosize="{ minRows: 3, maxRows: 5}"></el-input>
+            </el-form-item>
           </el-form>
           <span slot="footer">
             <el-button @click="newDialogVisible = false">取 消</el-button>
@@ -114,26 +114,26 @@ export default {
           {min: 6, max: 16, trigger: 'change', message: '长度在 6 到 16 个字符'}
         ],
         email: [
-          {required: true, trigger: 'change', message: '请输入您的邮箱'},
+          {required: true, trigger: 'change', message: '请输入邮箱'},
           {type: 'email', trigger: 'change', message: '请输入正确的邮箱地址'}
         ],
         profession: [
-          {required: true, trigger: 'change', message: '请选择您的职业'}
+          {required: true, trigger: 'change', message: '请选择职业'}
         ],
         addressCode: [
           {required: true, trigger: 'change', message: '请选择地址'}
         ]
       },
       registerForm: {
-        userName: '',
-        userPassword: '',
+        userName: '超级管理员',
+        userPassword: 'aaaaaa',
         sex: '',
         birthday: '',
-        phoneNumber: '',
-        email: '',
-        addressCode: '',
-        profession: '',
-        description: ''
+        phoneNumber: '17805930630',
+        email: 'mingtielin@outlook.com',
+        addressCode: '中国',
+        profession: '002001',
+        description: '我是超级管理员！'
       },
       professions: [],
       sexs: [],
@@ -149,7 +149,6 @@ export default {
   methods: {
     // 点击注册按钮
     register () {
-      // this.api.post('/UserInfoApi/test', this.registerForm)
       this.$refs['registerForm'].validate((valid) => {
         if (valid) {
           const passwordConfirmValidator = (value) => {

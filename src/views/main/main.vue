@@ -20,6 +20,10 @@
         <i class="icon-menu-item"><icon name="userManage" scale="2"></icon></i>
         <span slot="title">用户管理</span>
       </el-menu-item>
+      <el-menu-item index="/main/classifyManage">
+        <i class="el-icon-menu">  </i>
+        <span slot="title">分类管理</span>
+      </el-menu-item>
     </el-menu>
   </div>
   <div class="main-container">

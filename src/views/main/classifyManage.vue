@@ -103,7 +103,7 @@
 
 <script>
 export default {
-  name: 'DigitalDictionary',
+  name: 'ClassifyManager',
   data () {
     return {
       deleteData: [],

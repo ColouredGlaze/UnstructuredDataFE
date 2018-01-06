@@ -4,6 +4,7 @@ import Login from '@/views/login/login'
 import Main from '@/views/main/main'
 import DigitalDictionary from '@/views/main/digitalDictionary'
 import UserManage from '@/views/main/userManage'
+import ClassifyManage from '@/views/main/classifyManage'
 Vue.use(Router)
 
 export default new Router({
@@ -28,6 +29,11 @@ export default new Router({
           path: 'userManage',
           name: 'UserManage',
           component: UserManage
+        },
+        {
+          path: 'classifyManage',
+          name: 'ClassifyManage',
+          component: ClassifyManage
         }
       ]
     }
