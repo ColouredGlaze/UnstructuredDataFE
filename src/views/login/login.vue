@@ -180,14 +180,14 @@ export default {
     },
     // 初始化数据
     async init () {
-      const sexResult = await this.api.post('/DigitalDictionaryApi/findChildrenForTree', {parentCode: '001'})
+      const sexResult = await this.api.post('/DigitalDictionaryApi/getChildrenForSelect', {parentCode: '001'})
       // 初始化性别选项
       if (sexResult !== null) {
         this.sexs = sexResult
         this.registerForm.sex = this.sexs[0].code
       }
       // 初始化职业选项
-      const professionsResult = await this.api.post('/DigitalDictionaryApi/findChildrenForTree', {parentCode: '002'})
+      const professionsResult = await this.api.post('/DigitalDictionaryApi/getChildrenForSelect', {parentCode: '002'})
       if (professionsResult !== null) {
         this.professions = professionsResult
       }

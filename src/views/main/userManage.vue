@@ -1,5 +1,5 @@
 <template>
-  <div class="digital-dictionary">
+  <div class="user-manage">
     <el-row>
       <el-col :span="6">
         <el-form ref="searchUserInfoForm" :model="searchUserInfo" :inline="true">
@@ -292,14 +292,14 @@ export default {
     },
     // 初始化数据
     async init () {
-      const sexResult = await this.api.post('/DigitalDictionaryApi/findChildrenForTree', {parentCode: '001'})
+      const sexResult = await this.api.post('/DigitalDictionaryApi/getChildrenForSelect', {parentCode: '001'})
       // 初始化性别选项
       if (sexResult !== null) {
         this.sexs = sexResult
         this.newUserInfoForm.sex = this.sexs[0].code
       }
       // 初始化职业选项
-      const professionsResult = await this.api.post('/DigitalDictionaryApi/findChildrenForTree', {parentCode: '002'})
+      const professionsResult = await this.api.post('/DigitalDictionaryApi/getChildrenForSelect', {parentCode: '002'})
       if (professionsResult !== null) {
         this.professions = professionsResult
       }
@@ -313,7 +313,7 @@ export default {
 </script>
 
 <style scoped>
-.digital-dictionary .el-dialog--center .el-dialog__body{
+.user-manage .el-dialog--center .el-dialog__body{
   padding: 25px 27px 0px;
 }
 .pagination-container{

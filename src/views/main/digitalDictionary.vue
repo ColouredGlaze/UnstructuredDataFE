@@ -69,30 +69,30 @@
     </el-dialog>
 
     <el-dialog title="修改数据字典" :visible.sync="modifyDialogVisible" width="30%" center>
-      <el-form :model="modifyDigitalDictionary" ref="modifyDigitalDictionary" :rules="digitalDictionaryRules" label-width="70px" >
+      <el-form :model="modifyDigitalDictionaryForm" ref="modifyDigitalDictionaryForm" :rules="digitalDictionaryRules" label-width="70px" >
         <el-form-item label="名称" prop="designation">
-          <el-input v-model="modifyDigitalDictionary.designation" placeholder="请输入数据字典的名称"></el-input>
+          <el-input v-model="modifyDigitalDictionaryForm.designation" placeholder="请输入数据字典的名称"></el-input>
         </el-form-item>
         <el-form-item label="父类编码" prop="parentCode">
-          <el-input v-model="modifyDigitalDictionary.parentCode" placeholder="请选择父类编码" :disabled="true">
+          <el-input v-model="modifyDigitalDictionaryForm.parentCode" placeholder="请选择父类编码" :disabled="true">
             <el-button @click="chooseParentCodeDialogVisible = true" slot="append" icon="el-icon-search"></el-button>
           </el-input>
         </el-form-item>
         <el-form-item label="编码" prop="code">
-          <el-input v-model="modifyDigitalDictionary.code" placeholder="请输入编码"></el-input>
+          <el-input v-model="modifyDigitalDictionaryForm.code" placeholder="请输入编码"></el-input>
         </el-form-item>
         <el-form-item label="描述" prop="description">
-          <el-input v-model="modifyDigitalDictionary.description" placeholder="请描述该数据字典" type="textarea" :rows="3"></el-input>
+          <el-input v-model="modifyDigitalDictionaryForm.description" placeholder="请描述该数据字典" type="textarea" :rows="3"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer">
         <el-button @click="modifyDialogVisible = false">取 消</el-button>
-        <el-button @click="alertDigitalDictionary" type="primary">确 定</el-button>
+        <el-button @click="modifyDigitalDictionary" type="primary">确 定</el-button>
       </span>
     </el-dialog>
 
     <el-dialog title="选择父级数据字典" :visible.sync="chooseParentCodeDialogVisible" width="30%" center>
-      <el-tree :props="treeProps" :load="loadParentCode" @node-click="chooseParentCode" lazy ></el-tree>
+      <el-tree :data="chooseParentCodeTree" @node-click="chooseParentCode" ></el-tree>
       <span slot="footer">
         <el-button @click="confirmParentCode" type="primary">确 定</el-button>
       </span>
@@ -106,11 +106,9 @@ export default {
   name: 'DigitalDictionary',
   data () {
     return {
+      chooseParentCodeTree: [],
       deleteData: [],
-      treeProps: {
-        label: 'designation'
-      },
-      modifyDigitalDictionary: {},
+      modifyDigitalDictionaryForm: {},
       newDigitalDictionary: {
         designation: '',
         parentCode: '',
@@ -154,7 +152,7 @@ export default {
         }).then(async () => {
           await this.api.post('/DigitalDictionaryApi/delete', this.deleteData)
         }).then(() => {
-          this.getTableDate()
+          this.init()
         })
       }
     },
@@ -163,7 +161,7 @@ export default {
     },
     chooseParentCode (node) {
       this.newDigitalDictionary.parentCode = node.code
-      this.modifyDigitalDictionary.parentCode = node.code
+      this.modifyDigitalDictionaryForm.parentCode = node.code
     },
     confirmParentCode () {
       this.chooseParentCodeDialogVisible = false
@@ -171,24 +169,15 @@ export default {
     searchByKeyWord () {
       this.getTableDate()
     },
-    async loadParentCode (node, resolve) {
-      if (node.level === 0) {
-        const result = await this.api.post('/DigitalDictionaryApi/findChildrenForTree', {parentCode: ''})
-        resolve(result)
-      } else {
-        const result = await this.api.post('/DigitalDictionaryApi/findChildrenForTree', {parentCode: node.data.code})
-        resolve(result)
-      }
-    },
     addDigitalDictionary () {
       this.$refs['newDigitalDictionary'].validate(async (valid) => {
         if (valid) {
           const result = await this.api.post('/DigitalDictionaryApi/save', this.newDigitalDictionary)
           if (result !== null) {
             this.newDialogVisible = false
-            this.getTableDate()
+            this.$refs['newDigitalDictionary'].resetFields()
+            this.init()
           }
-          this.$refs['newDigitalDictionary'].resetFields()
         }
       })
     },
@@ -196,17 +185,18 @@ export default {
       const result = await this.api.post('/DigitalDictionaryApi/findOneById', {id: data.id})
       if (result !== null) {
         this.modifyDialogVisible = true
-        this.modifyDigitalDictionary = result
+        this.modifyDigitalDictionaryForm = result
+        this.init()
       }
     },
-    async alertDigitalDictionary () {
-      this.$refs['modifyDigitalDictionary'].validate(async (valid) => {
+    async modifyDigitalDictionary () {
+      this.$refs['modifyDigitalDictionaryForm'].validate(async (valid) => {
         if (valid) {
-          await this.api.post('/DigitalDictionaryApi/update', this.modifyDigitalDictionary)
+          await this.api.post('/DigitalDictionaryApi/update', this.modifyDigitalDictionaryForm)
           this.modifyDialogVisible = false
-          this.getTableDate()
+          this.$refs['modifyDigitalDictionaryForm'].resetFields()
+          this.init()
         }
-        this.$refs['modifyDigitalDictionary'].resetFields()
       })
     },
     handleSizeChange (val) {
@@ -216,6 +206,16 @@ export default {
     handleCurrentChange (val) {
       this.currentPage = val
       this.getTableDate()
+    },
+    init () {
+      this.getTableDate()
+      this.initParentCodeTree()
+    },
+    async initParentCodeTree () {
+      const result = await this.api.post('/DigitalDictionaryApi/getParentCodeTree')
+      if (result !== null) {
+        this.chooseParentCodeTree = result
+      }
     },
     async getTableDate () {
       const result = await this.api.post('/DigitalDictionaryApi/search',
@@ -227,7 +227,7 @@ export default {
     }
   },
   mounted () {
-    this.getTableDate()
+    this.init()
   }
 }
 </script>

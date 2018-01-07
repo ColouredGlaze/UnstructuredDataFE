@@ -1,10 +1,10 @@
 <template>
-  <div class="digital-dictionary">
+  <div class="classify-manage">
     <el-row>
       <el-col :span="6">
-        <el-form ref="searchDigitalDictionaryForm" :model="searchDigitalDictionary" :inline="true">
+        <el-form ref="searchClassifyForm" :model="searchClassify" :inline="true">
           <el-form-item label="关键词：">
-            <el-input v-model="searchDigitalDictionary.keyWord"></el-input>
+            <el-input v-model="searchClassify.keyWord"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button @click="searchByKeyWord" type="primary" icon="el-icon-search">搜 索</el-button>
@@ -12,18 +12,20 @@
         </el-form>
       </el-col>
       <el-col :span="18" style="text-align: right;">
-        <el-button @click="newDialogVisible = true" type="primary" icon="el-icon-edit">新增数据字典</el-button>
-        <el-button @click="deleteDigitalDictionary" type="primary" icon="el-icon-delete">删除数据字典</el-button>
+        <el-button @click="newDialogVisible = true" type="primary" icon="el-icon-edit">新增分类</el-button>
+        <el-button @click="deleteClassify" type="primary" icon="el-icon-delete">删除分类</el-button>
       </el-col>
     </el-row>
     <div class="table-container">
       <el-table :data="tableData" ref="tableData" style="width: 100%" max-height="730" @select="tableSelect" @select-all="tableSelect" border stripe>
         <el-table-column type="selection"></el-table-column>
-        <el-table-column prop="id" label="数据字典ID" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="designation" label="名称"></el-table-column>
-        <el-table-column prop="parentCode" label="父类编码"></el-table-column>
-        <el-table-column prop="code" label="编码"></el-table-column>
+        <el-table-column prop="designation" label="分类名称" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="parent" label="父级分类"></el-table-column>
+        <el-table-column prop="classifyType" label="分类类型"></el-table-column>
         <el-table-column prop="description" label="描述"></el-table-column>
+        <el-table-column prop="collectionNum" label="收藏数"></el-table-column>
+        <el-table-column prop="downloadNum" label="下载数"></el-table-column>
+        <el-table-column prop="uploadNum" label="上传数"></el-table-column>
         <el-table-column prop="creator" label="创建人"></el-table-column>
         <el-table-column prop="createTime" label="创建时间"></el-table-column>
         <el-table-column label="编辑" width="100">
@@ -45,53 +47,57 @@
           :total="totalQuantity">
         </el-pagination>
     </div>
-    <el-dialog title="新增数据字典" :visible.sync="newDialogVisible" width="30%" center>
-      <el-form :model="newDigitalDictionary" ref="newDigitalDictionary" :rules="digitalDictionaryRules" label-width="70px" >
+    <el-dialog title="新增分类" :visible.sync="newDialogVisible" width="30%" center>
+      <el-form :model="newClassifyForm" ref="newClassifyForm" :rules="classifyRules" label-width="70px" >
         <el-form-item label="名称" prop="designation">
-          <el-input v-model="newDigitalDictionary.designation" placeholder="请输入数据字典的名称"></el-input>
+          <el-input v-model="newClassifyForm.designation" placeholder="请输入分类名称"></el-input>
         </el-form-item>
-        <el-form-item label="父类编码" prop="parentCode">
-          <el-input v-model="newDigitalDictionary.parentCode" placeholder="请选择父类编码" :disabled="true">
-            <el-button @click="chooseParentCodeDialogVisible = true" slot="append" icon="el-icon-search"></el-button>
+        <el-form-item label="父类" prop="parentId">
+          <el-input v-model="parentDesignation" placeholder="请选择父类" :disabled="true">
+            <el-button @click="chooseParentIdDialogVisible = true" slot="append" icon="el-icon-search"></el-button>
           </el-input>
         </el-form-item>
-        <el-form-item label="编码" prop="code">
-          <el-input v-model="newDigitalDictionary.code" placeholder="请输入编码"></el-input>
+        <el-form-item label="分类类型" prop="classifyType">
+          <el-select v-model="newClassifyForm.classifyType">
+            <el-option v-for="item in classifyTypes" :key="item.code" :label="item.designation" :value="item.code"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="描述" prop="description">
-          <el-input v-model="newDigitalDictionary.description" placeholder="请描述该数据字典" type="textarea" :rows="3"></el-input>
+          <el-input v-model="newClassifyForm.description" placeholder="请描述该分类" type="textarea" :rows="3"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer">
         <el-button @click="newDialogVisible = false">取 消</el-button>
-        <el-button @click="addDigitalDictionary" type="primary">确 定</el-button>
+        <el-button @click="addClassify" type="primary">确 定</el-button>
       </span>
     </el-dialog>
 
-    <el-dialog title="修改数据字典" :visible.sync="modifyDialogVisible" width="30%" center>
-      <el-form :model="modifyDigitalDictionary" ref="modifyDigitalDictionary" :rules="digitalDictionaryRules" label-width="70px" >
+    <el-dialog title="修改分类" :visible.sync="modifyDialogVisible" width="30%" center>
+      <el-form :model="modifyClassifyForm" ref="modifyClassifyForm" :rules="classifyRules" label-width="70px" >
         <el-form-item label="名称" prop="designation">
-          <el-input v-model="modifyDigitalDictionary.designation" placeholder="请输入数据字典的名称"></el-input>
+          <el-input v-model="newClassifyForm.designation" placeholder="请输入分类名称"></el-input>
         </el-form-item>
-        <el-form-item label="父类编码" prop="parentCode">
-          <el-input v-model="modifyDigitalDictionary.parentCode" placeholder="请选择父类编码" :disabled="true">
-            <el-button @click="chooseParentCodeDialogVisible = true" slot="append" icon="el-icon-search"></el-button>
+        <el-form-item label="父类" prop="parentId">
+          <el-input v-model="parentDesignation" placeholder="请选择父类" :disabled="true">
+            <el-button @click="chooseParentIdDialogVisible = true" slot="append" icon="el-icon-search"></el-button>
           </el-input>
         </el-form-item>
-        <el-form-item label="编码" prop="code">
-          <el-input v-model="modifyDigitalDictionary.code" placeholder="请输入编码"></el-input>
+        <el-form-item label="分类类型" prop="classifyType">
+          <el-select v-model="newClassifyForm.classifyType">
+            <el-option v-for="item in classifyTypes" :key="item.code" :label="item.designation" :value="item.code"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="描述" prop="description">
-          <el-input v-model="modifyDigitalDictionary.description" placeholder="请描述该数据字典" type="textarea" :rows="3"></el-input>
+          <el-input v-model="newClassifyForm.description" placeholder="请描述该分类" type="textarea" :rows="3"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer">
         <el-button @click="modifyDialogVisible = false">取 消</el-button>
-        <el-button @click="alertDigitalDictionary" type="primary">确 定</el-button>
+        <el-button @click="modifyClassify" type="primary">确 定</el-button>
       </span>
     </el-dialog>
 
-    <el-dialog title="选择父级数据字典" :visible.sync="chooseParentCodeDialogVisible" width="30%" center>
+    <el-dialog title="选择父级分类" :visible.sync="chooseParentCodeDialogVisible" width="30%" center>
       <el-tree :props="treeProps" :load="loadParentCode" @node-click="chooseParentCode" lazy ></el-tree>
       <span slot="footer">
         <el-button @click="confirmParentCode" type="primary">确 定</el-button>
@@ -106,44 +112,45 @@ export default {
   name: 'ClassifyManager',
   data () {
     return {
-      deleteData: [],
-      treeProps: {
-        label: 'designation'
-      },
-      modifyDigitalDictionary: {},
-      newDigitalDictionary: {
+      classifyTypes: [],
+      parentDesignation: '',
+      classifyTypeDesignation: '',
+      modifyClassifyForm: {},
+      newClassifyForm: {
         designation: '',
         parentCode: '',
         code: '',
         description: ''
       },
       tableData: [],
-      searchDigitalDictionary: {
+      searchClassify: {
         keyWord: ''
       },
-      digitalDictionaryRules: {
+      classifyRules: {
         designation: [
-          {required: true, message: '数据字典名称不能为空', trigger: 'blur'},
+          {required: true, message: '分类名称不能为空', trigger: 'blur'},
           {min: 1, max: 32, message: '长度在 1 到 32 个字符', trigger: 'blur'}
         ],
-        code: [
-          {required: true, message: '编码不能为空', trigger: 'blur'},
-          {min: 1, max: 6, message: '长度在 1 到 6 个字符', trigger: 'blur'}
-        ],
         description: [
-          {max: 100, message: '长度在 100 个字符以内', trigger: ''}
+          {max: 100, message: '长度在 300 个字符以内', trigger: ''}
         ]
       },
       newDialogVisible: false,
       modifyDialogVisible: false,
-      chooseParentCodeDialogVisible: false,
+      chooseParentIdDialogVisible: false,
+      chooseClassifyTypeDialogVisible: false,
+      treeProps: {
+        label: 'designation',
+        children: 'children'
+      },
+      deleteData: [],
       currentPage: 1,
       pageSize: 12,
       totalQuantity: 0
     }
   },
   methods: {
-    deleteDigitalDictionary () {
+    deleteClassify () {
       if (this.deleteData.length === 0) {
         this.$message.info('请选择要删除的记录')
       } else {
@@ -152,7 +159,7 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(async () => {
-          await this.api.post('/DigitalDictionaryApi/delete', this.deleteData)
+          await this.api.post('/ClassifyApi/delete', this.deleteData)
         }).then(() => {
           this.getTableDate()
         })
@@ -162,8 +169,8 @@ export default {
       this.deleteData = selection
     },
     chooseParentCode (node) {
-      this.newDigitalDictionary.parentCode = node.code
-      this.modifyDigitalDictionary.parentCode = node.code
+      this.newClassifyForm.parentCode = node.code
+      this.modifyClassifyForm.parentCode = node.code
     },
     confirmParentCode () {
       this.chooseParentCodeDialogVisible = false
@@ -173,40 +180,40 @@ export default {
     },
     async loadParentCode (node, resolve) {
       if (node.level === 0) {
-        const result = await this.api.post('/DigitalDictionaryApi/findChildrenForTree', {parentCode: ''})
+        const result = await this.api.post('/ClassifyApi/findChildrenForTree', {parentCode: ''})
         resolve(result)
       } else {
-        const result = await this.api.post('/DigitalDictionaryApi/findChildrenForTree', {parentCode: node.data.code})
+        const result = await this.api.post('/ClassifyApi/findChildrenForTree', {parentCode: node.data.code})
         resolve(result)
       }
     },
-    addDigitalDictionary () {
-      this.$refs['newDigitalDictionary'].validate(async (valid) => {
+    addClassify () {
+      this.$refs['newClassifyForm'].validate(async (valid) => {
         if (valid) {
-          const result = await this.api.post('/DigitalDictionaryApi/save', this.newDigitalDictionary)
+          const result = await this.api.post('/ClassifyApi/save', this.newClassifyForm)
           if (result !== null) {
             this.newDialogVisible = false
             this.getTableDate()
           }
-          this.$refs['newDigitalDictionary'].resetFields()
+          this.$refs['newClassifyForm'].resetFields()
         }
       })
     },
     async modify (data) {
-      const result = await this.api.post('/DigitalDictionaryApi/findOneById', {id: data.id})
+      const result = await this.api.post('/ClassifyApi/findOneById', {id: data.id})
       if (result !== null) {
         this.modifyDialogVisible = true
-        this.modifyDigitalDictionary = result
+        this.modifyClassifyForm = result
       }
     },
-    async alertDigitalDictionary () {
-      this.$refs['modifyDigitalDictionary'].validate(async (valid) => {
+    async modifyClassify () {
+      this.$refs['modifyClassifyForm'].validate(async (valid) => {
         if (valid) {
-          await this.api.post('/DigitalDictionaryApi/update', this.modifyDigitalDictionary)
+          await this.api.post('/ClassifyApi/update', this.modifyClassifyForm)
           this.modifyDialogVisible = false
           this.getTableDate()
         }
-        this.$refs['modifyDigitalDictionary'].resetFields()
+        this.$refs['modifyClassifyForm'].resetFields()
       })
     },
     handleSizeChange (val) {
@@ -218,8 +225,8 @@ export default {
       this.getTableDate()
     },
     async getTableDate () {
-      const result = await this.api.post('/DigitalDictionaryApi/search',
-      {currentPage: this.currentPage, pageSize: this.pageSize, keyWord: this.searchDigitalDictionary.keyWord})
+      const result = await this.api.post('/ClassifyApi/search',
+      {currentPage: this.currentPage, pageSize: this.pageSize, keyWord: this.searchClassify.keyWord})
       if (result != null) {
         this.totalQuantity = result.totalElements
         this.tableData = result.content
