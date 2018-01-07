@@ -128,19 +128,19 @@ export default {
     return {
       selectData: [],
       newUserInfoForm: {
-        userName: '',
-        userPassword: '',
-        sex: '',
-        birthday: '',
-        phoneNumber: '',
-        email: '',
-        addressCode: '',
-        profession: '',
-        description: ''
+        userName: null,
+        userPassword: null,
+        sex: null,
+        birthday: null,
+        phoneNumber: null,
+        email: null,
+        addressCode: null,
+        profession: null,
+        description: null
       },
       tableData: [],
       searchUserInfo: {
-        keyWord: ''
+        keyWord: null
       },
       userInfoRules: {
         userName: [

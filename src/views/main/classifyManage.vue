@@ -53,7 +53,7 @@
           <el-input v-model="newClassifyForm.designation" placeholder="请输入分类名称"></el-input>
         </el-form-item>
         <el-form-item label="父类" prop="parentId">
-          <el-input v-model="parentDesignation" placeholder="请选择父类" :disabled="true">
+          <el-input v-model="currentChooseParentDesignation" placeholder="请选择父类" :disabled="true">
             <el-button @click="chooseParentIdDialogVisible = true" slot="append" icon="el-icon-search"></el-button>
           </el-input>
         </el-form-item>
@@ -78,7 +78,7 @@
           <el-input v-model="newClassifyForm.designation" placeholder="请输入分类名称"></el-input>
         </el-form-item>
         <el-form-item label="父类" prop="parentId">
-          <el-input v-model="parentDesignation" placeholder="请选择父类" :disabled="true">
+          <el-input v-model="currentChooseParentDesignation" placeholder="请选择父类" :disabled="true">
             <el-button @click="chooseParentIdDialogVisible = true" slot="append" icon="el-icon-search"></el-button>
           </el-input>
         </el-form-item>
@@ -97,10 +97,10 @@
       </span>
     </el-dialog>
 
-    <el-dialog title="选择父级分类" :visible.sync="chooseParentCodeDialogVisible" width="30%" center>
-      <el-tree :props="treeProps" :load="loadParentCode" @node-click="chooseParentCode" lazy ></el-tree>
+    <el-dialog title="选择父级分类" :visible.sync="chooseParentIdDialogVisible" width="30%" center>
+      <el-tree :data="parentIdTree" @node-click="chooseParentId" ></el-tree>
       <span slot="footer">
-        <el-button @click="confirmParentCode" type="primary">确 定</el-button>
+        <el-button @click="confirmParentId" type="primary">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -109,40 +109,38 @@
 
 <script>
 export default {
-  name: 'ClassifyManager',
+  name: 'Classify',
   data () {
     return {
+      parentIdTree: [],
       classifyTypes: [],
-      parentDesignation: '',
-      classifyTypeDesignation: '',
+      currentChooseParentDesignation: null,
+      currentChooseParentId: null,
+      classifyTypeDesignation: null,
       modifyClassifyForm: {},
       newClassifyForm: {
-        designation: '',
-        parentCode: '',
-        code: '',
-        description: ''
+        designation: null,
+        parentId: null,
+        classifyType: null,
+        description: null
       },
-      tableData: [],
       searchClassify: {
-        keyWord: ''
+        keyWord: null
       },
       classifyRules: {
         designation: [
-          {required: true, message: '分类名称不能为空', trigger: 'blur'},
-          {min: 1, max: 32, message: '长度在 1 到 32 个字符', trigger: 'blur'}
+          {required: true, message: '分类名称不能为空', trigger: 'change'},
+          {min: 1, max: 32, message: '长度在 1 到 32 个字符', trigger: 'change'}
         ],
         description: [
-          {max: 100, message: '长度在 300 个字符以内', trigger: ''}
+          {max: 100, message: '长度在 300 个字符以内', trigger: 'change'}
         ]
       },
       newDialogVisible: false,
       modifyDialogVisible: false,
       chooseParentIdDialogVisible: false,
       chooseClassifyTypeDialogVisible: false,
-      treeProps: {
-        label: 'designation',
-        children: 'children'
-      },
+      tableData: [],
       deleteData: [],
       currentPage: 1,
       pageSize: 12,
@@ -150,6 +148,9 @@ export default {
     }
   },
   methods: {
+    chooseParentId (node) {
+      console.log(node)
+    },
     deleteClassify () {
       if (this.deleteData.length === 0) {
         this.$message.info('请选择要删除的记录')
@@ -172,8 +173,8 @@ export default {
       this.newClassifyForm.parentCode = node.code
       this.modifyClassifyForm.parentCode = node.code
     },
-    confirmParentCode () {
-      this.chooseParentCodeDialogVisible = false
+    confirmParentId () {
+      this.chooseParentIdDialogVisible = false
     },
     searchByKeyWord () {
       this.getTableDate()
@@ -216,13 +217,19 @@ export default {
         this.$refs['modifyClassifyForm'].resetFields()
       })
     },
-    handleSizeChange (val) {
-      this.pageSize = val
-      this.getTableDate()
+    async initClassifyTypes () {
+      const result = await this.api.post('/DigitalDictionaryApi/getChildrenForSelect', {parentCode: '006'})
+      // 初始化分类类别选项
+      if (result !== null) {
+        this.classifyTypes = result
+        this.newClassifyForm.classifyType = this.classifyTypes[0].code
+      }
     },
-    handleCurrentChange (val) {
-      this.currentPage = val
-      this.getTableDate()
+    async initParentIdTree () {
+      const result = await this.api.post('/ClassifyApi/getParentTree')
+      if (result !== null) {
+        this.parentIdTree = result
+      }
     },
     async getTableDate () {
       const result = await this.api.post('/ClassifyApi/search',
@@ -231,10 +238,23 @@ export default {
         this.totalQuantity = result.totalElements
         this.tableData = result.content
       }
+    },
+    handleSizeChange (val) {
+      this.pageSize = val
+      this.getTableDate()
+    },
+    handleCurrentChange (val) {
+      this.currentPage = val
+      this.getTableDate()
+    },
+    init () {
+      // this.getTableDate()
+      this.initParentIdTree()
+      this.initClassifyTypes()
     }
   },
   mounted () {
-    this.getTableDate()
+    this.init()
   }
 }
 </script>

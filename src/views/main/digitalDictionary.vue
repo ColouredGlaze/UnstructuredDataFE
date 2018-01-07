@@ -106,18 +106,19 @@ export default {
   name: 'DigitalDictionary',
   data () {
     return {
+      currentChooseParentCode: null,
       chooseParentCodeTree: [],
       deleteData: [],
       modifyDigitalDictionaryForm: {},
       newDigitalDictionary: {
-        designation: '',
-        parentCode: '',
-        code: '',
-        description: ''
+        designation: null,
+        parentCode: null,
+        code: null,
+        description: null
       },
       tableData: [],
       searchDigitalDictionary: {
-        keyWord: ''
+        keyWord: null
       },
       digitalDictionaryRules: {
         designation: [
@@ -160,10 +161,11 @@ export default {
       this.deleteData = selection
     },
     chooseParentCode (node) {
-      this.newDigitalDictionary.parentCode = node.code
+      this.currentChooseParentCode = node.code
       this.modifyDigitalDictionaryForm.parentCode = node.code
     },
     confirmParentCode () {
+      this.newDigitalDictionary.parentCode = this.currentChooseParentCode
       this.chooseParentCodeDialogVisible = false
     },
     searchByKeyWord () {
