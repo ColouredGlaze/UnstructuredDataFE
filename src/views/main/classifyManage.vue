@@ -24,8 +24,8 @@
         <el-table-column prop="classifyType" label="分类类型"></el-table-column>
         <el-table-column prop="description" label="描述"></el-table-column>
         <el-table-column prop="collectionNum" label="收藏数"></el-table-column>
+        <el-table-column prop="uploadNum" label="上传数"></el-table-column>        
         <el-table-column prop="downloadNum" label="下载数"></el-table-column>
-        <el-table-column prop="uploadNum" label="上传数"></el-table-column>
         <el-table-column prop="creator" label="创建人"></el-table-column>
         <el-table-column prop="createTime" label="创建时间"></el-table-column>
         <el-table-column label="编辑" width="100">
@@ -171,6 +171,7 @@ export default {
     },
     confirmParentId () {
       this.newClassifyForm.parentId = this.currentChooseParent.id
+      this.modifyClassifyForm.parentId = this.currentChooseParent.id
       this.currentChooseParentDesignation = this.currentChooseParent.label
       this.chooseParentIdDialogVisible = false
     },
@@ -184,6 +185,7 @@ export default {
           if (result !== null) {
             this.newDialogVisible = false
             this.$refs['newClassifyForm'].resetFields()
+            this.currentChooseParentDesignation = null
             this.init()
           }
         }
@@ -203,6 +205,8 @@ export default {
           const result = await this.api.post('/ClassifyApi/update', this.modifyClassifyForm)
           if (result !== null) {
             this.modifyDialogVisible = false
+            this.$refs['modifyClassifyForm'].resetFields()
+            this.currentChooseParentDesignation = null
             this.init()
           }
         }

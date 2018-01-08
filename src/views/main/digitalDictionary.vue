@@ -165,6 +165,7 @@ export default {
     },
     confirmParentCode () {
       this.newDigitalDictionary.parentCode = this.currentChooseParent.code
+      this.modifyDigitalDictionaryForm.parentCode = this.currentChooseParent.code
       this.chooseParentCodeDialogVisible = false
     },
     searchByKeyWord () {

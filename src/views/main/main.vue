@@ -10,7 +10,7 @@
         <i class="el-icon-menu"></i>
         <span slot="title">分类管理</span>
       </el-menu-item>
-      <el-menu-item index="/main/classifyManage">
+      <el-menu-item index="/main/dissertationManage">
         <i class="icon-menu-item"><icon name="dissertationManage" scale="2"></icon></i>
         <span slot="title">专题管理</span>
       </el-menu-item>
