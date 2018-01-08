@@ -39,13 +39,13 @@
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="currentPage"
-          :page-sizes="[12, 20, 30, 40, 50]"
+          :page-sizes="[12, 20, 36, 40, 50]"
           :page-size="pageSize"
           layout="total, sizes, prev, pager, next, jumper"
           :total="totalQuantity">
         </el-pagination>
     </div>
-    <el-dialog title="新增数据字典" :visible.sync="newDialogVisible" width="30%" center>
+    <el-dialog title="新增数据字典" :visible.sync="newDialogVisible" width="36%" center>
       <el-form :model="newDigitalDictionary" ref="newDigitalDictionary" :rules="digitalDictionaryRules" label-width="70px" >
         <el-form-item label="名称" prop="designation">
           <el-input v-model="newDigitalDictionary.designation" placeholder="请输入数据字典的名称"></el-input>
@@ -68,7 +68,7 @@
       </span>
     </el-dialog>
 
-    <el-dialog title="修改数据字典" :visible.sync="modifyDialogVisible" width="30%" center>
+    <el-dialog title="修改数据字典" :visible.sync="modifyDialogVisible" width="36%" center>
       <el-form :model="modifyDigitalDictionaryForm" ref="modifyDigitalDictionaryForm" :rules="digitalDictionaryRules" label-width="70px" >
         <el-form-item label="名称" prop="designation">
           <el-input v-model="modifyDigitalDictionaryForm.designation" placeholder="请输入数据字典的名称"></el-input>

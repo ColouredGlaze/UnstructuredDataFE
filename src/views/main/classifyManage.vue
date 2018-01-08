@@ -47,7 +47,7 @@
           :total="totalQuantity">
         </el-pagination>
     </div>
-    <el-dialog title="新增分类" :visible.sync="newDialogVisible" width="30%" center>
+    <el-dialog title="新增分类" :visible.sync="newDialogVisible" width="36%" center>
       <el-form :model="newClassifyForm" ref="newClassifyForm" :rules="classifyRules" label-width="70px" >
         <el-form-item label="名称" prop="designation">
           <el-input v-model="newClassifyForm.designation" placeholder="请输入分类名称"></el-input>
@@ -58,7 +58,7 @@
           </el-input>
         </el-form-item>
         <el-form-item label="分类类型" prop="classifyType">
-          <el-select v-model="newClassifyForm.classifyType">
+          <el-select v-model="newClassifyForm.classifyType" @change="classifyTypeChange">
             <el-option v-for="item in classifyTypes" :key="item.code" :label="item.designation" :value="item.code"></el-option>
           </el-select>
         </el-form-item>
@@ -72,10 +72,10 @@
       </span>
     </el-dialog>
 
-    <el-dialog title="修改分类" :visible.sync="modifyDialogVisible" width="30%" center>
+    <el-dialog title="修改分类" :visible.sync="modifyDialogVisible" width="36%" center>
       <el-form :model="modifyClassifyForm" ref="modifyClassifyForm" :rules="classifyRules" label-width="70px" >
         <el-form-item label="名称" prop="designation">
-          <el-input v-model="newClassifyForm.designation" placeholder="请输入分类名称"></el-input>
+          <el-input v-model="modifyClassifyForm.designation" placeholder="请输入分类名称"></el-input>
         </el-form-item>
         <el-form-item label="父类" prop="parentId">
           <el-input v-model="currentChooseParentDesignation" placeholder="请选择父类" :disabled="true">
@@ -83,12 +83,12 @@
           </el-input>
         </el-form-item>
         <el-form-item label="分类类型" prop="classifyType">
-          <el-select v-model="newClassifyForm.classifyType">
+          <el-select v-model="modifyClassifyForm.classifyType" disabled >
             <el-option v-for="item in classifyTypes" :key="item.code" :label="item.designation" :value="item.code"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="描述" prop="description">
-          <el-input v-model="newClassifyForm.description" placeholder="请描述该分类" type="textarea" :rows="3"></el-input>
+          <el-input v-model="modifyClassifyForm.description" placeholder="请描述该分类" type="textarea" :rows="3"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer">
@@ -148,45 +148,34 @@ export default {
     }
   },
   methods: {
+    classifyTypeChange (value) {
+      this.initParentIdTree()
+    },
     chooseParentId (node) {
-      console.log(node)
       this.currentChooseParent = node
     },
     deleteClassify () {
       if (this.deleteData.length === 0) {
-        this.$message.info('请选择要删除的记录')
+        this.$message.info('请选择要删除的分类')
       } else {
-        this.$confirm('确定要删除当前选中的 ' + this.deleteData.length + ' 条记录吗？', '提示', {
+        this.$confirm('确定要删除当前选中的 ' + this.deleteData.length + ' 个分类吗？', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(async () => {
           await this.api.post('/ClassifyApi/delete', this.deleteData)
         }).then(() => {
-          this.getTableDate()
+          this.init()
         })
       }
-    },
-    tableSelect (selection) {
-      this.deleteData = selection
     },
     confirmParentId () {
       this.newClassifyForm.parentId = this.currentChooseParent.id
       this.currentChooseParentDesignation = this.currentChooseParent.label
-      console.log(this.newClassifyForm)
       this.chooseParentIdDialogVisible = false
     },
     searchByKeyWord () {
       this.getTableDate()
-    },
-    async loadParentCode (node, resolve) {
-      if (node.level === 0) {
-        const result = await this.api.post('/ClassifyApi/findChildrenForTree', {parentCode: ''})
-        resolve(result)
-      } else {
-        const result = await this.api.post('/ClassifyApi/findChildrenForTree', {parentCode: node.data.code})
-        resolve(result)
-      }
     },
     addClassify () {
       this.$refs['newClassifyForm'].validate(async (valid) => {
@@ -194,28 +183,34 @@ export default {
           const result = await this.api.post('/ClassifyApi/save', this.newClassifyForm)
           if (result !== null) {
             this.newDialogVisible = false
-            this.getTableDate()
+            this.$refs['newClassifyForm'].resetFields()
+            this.init()
           }
-          this.$refs['newClassifyForm'].resetFields()
         }
       })
     },
     async modify (data) {
       const result = await this.api.post('/ClassifyApi/findOneById', {id: data.id})
       if (result !== null) {
-        this.modifyDialogVisible = true
+        result.parentId = null
         this.modifyClassifyForm = result
+        this.modifyDialogVisible = true
       }
     },
     async modifyClassify () {
       this.$refs['modifyClassifyForm'].validate(async (valid) => {
         if (valid) {
-          await this.api.post('/ClassifyApi/update', this.modifyClassifyForm)
-          this.modifyDialogVisible = false
-          this.getTableDate()
+          const result = await this.api.post('/ClassifyApi/update', this.modifyClassifyForm)
+          if (result !== null) {
+            this.modifyDialogVisible = false
+            this.init()
+          }
         }
         this.$refs['modifyClassifyForm'].resetFields()
       })
+    },
+    tableSelect (selection) {
+      this.deleteData = selection
     },
     async initClassifyTypes () {
       const result = await this.api.post('/DigitalDictionaryApi/getChildrenForSelect', {parentCode: '006'})
@@ -226,7 +221,7 @@ export default {
       }
     },
     async initParentIdTree () {
-      const result = await this.api.post('/ClassifyApi/getParentTree')
+      const result = await this.api.post('/ClassifyApi/getParentTree', {classifyType: this.newClassifyForm.classifyType})
       if (result !== null) {
         this.parentIdTree = result
       }
@@ -239,6 +234,11 @@ export default {
         this.tableData = result.content
       }
     },
+    async init () {
+      await this.getTableDate()
+      await this.initClassifyTypes()
+      await this.initParentIdTree()
+    },
     handleSizeChange (val) {
       this.pageSize = val
       this.getTableDate()
@@ -246,11 +246,6 @@ export default {
     handleCurrentChange (val) {
       this.currentPage = val
       this.getTableDate()
-    },
-    init () {
-      // this.getTableDate()
-      this.initParentIdTree()
-      this.initClassifyTypes()
     }
   },
   mounted () {

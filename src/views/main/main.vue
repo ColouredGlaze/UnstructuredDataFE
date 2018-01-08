@@ -1,12 +1,19 @@
 <template>
 <div>
   <div class="menu-container">
-    <el-menu
-    :router="true"
-    background-color="#2d3a4b"
-    text-color="#fff"
-    active-text-color="#ffd04b"
-    style="border-right: 0px">
+    <el-menu :router="true" background-color="#2d3a4b" text-color="#fff" active-text-color="#ffd04b" style="border-right: 0px">
+      <el-menu-item index="/main/userManage">
+        <i class="icon-menu-item"><icon name="userManage" scale="2"></icon></i>
+        <span slot="title">用户管理</span>
+      </el-menu-item>
+      <el-menu-item index="/main/classifyManage">
+        <i class="el-icon-menu"></i>
+        <span slot="title">分类管理</span>
+      </el-menu-item>
+      <el-menu-item index="/main/classifyManage">
+        <i class="icon-menu-item"><icon name="dissertationManage" scale="2"></icon></i>
+        <span slot="title">专题管理</span>
+      </el-menu-item>
       <el-submenu index="1">
         <template slot="title">
           <i class="el-icon-setting"></i>
@@ -16,27 +23,20 @@
         <el-menu-item index="/main/digitalDictionary">数据字典</el-menu-item>
         <el-menu-item index="1-3">登录日志</el-menu-item>
       </el-submenu>
-      <el-menu-item index="/main/userManage">
-        <i class="icon-menu-item"><icon name="userManage" scale="2"></icon></i>
-        <span slot="title">用户管理</span>
-      </el-menu-item>
-      <el-menu-item index="/main/classifyManage">
-        <i class="el-icon-menu">  </i>
-        <span slot="title">分类管理</span>
-      </el-menu-item>
     </el-menu>
   </div>
   <div class="main-container">
-    <div class="breadcrumb">
+    <!-- <div class="breadcrumb">
       <el-breadcrumb separator="/" >
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
         <el-breadcrumb-item>活动管理</el-breadcrumb-item>
         <el-breadcrumb-item>活动列表</el-breadcrumb-item>
         <el-breadcrumb-item>活动详情</el-breadcrumb-item>
       </el-breadcrumb>
-    </div>
+    </div> -->
     <div class="router-view">
       <router-view></router-view>
+      <!-- <div v-if="inter">欢迎使用非结构化管理系统</div> -->
     </div>
   </div>
 </div>
@@ -46,7 +46,9 @@
 export default {
   name: 'Main',
   data () {
-    return {}
+    return {
+      // inter: true
+    }
   },
   methods: {}
 }

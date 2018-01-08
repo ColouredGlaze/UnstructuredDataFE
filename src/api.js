@@ -1,27 +1,28 @@
 import axios from 'axios'
-import { Loading, Message } from 'element-ui'
+import { Message } from 'element-ui'
+// import { Loading, Message } from 'element-ui'
 
 // 配置接口地址
 axios.defaults.baseURL = '/ud'
 // 配置请求头
 axios.defaults.headers.post['Content-Type'] = 'application/json;charset=utf-8'
 
-let loadinginstace
+// let loadinginstace
 
 // http请求拦截
 axios.interceptors.request.use(config => {
-  loadinginstace = Loading.service({ fullscreen: true })
+  // loadinginstace = Loading.service({ fullscreen: true })
   return config
 }, error => {
-  loadinginstace.close()
+  // loadinginstace.close()
   return Promise.reject(error)
 })
 // http 响应拦截
 axios.interceptors.response.use(response => {
-  loadinginstace.close()
+  // loadinginstace.close()
   return response
 }, error => {
-  loadinginstace.close()
+  // loadinginstace.close()
   return Promise.resolve(error.response)
 })
 
@@ -56,9 +57,11 @@ function checkCode (response) {
       return response.data.data
     }
   } else if (response.data.code === 500) {
-    Message.error('服务器出错')
+    Message.error('服务器出错，请联系管理员')
   } else if (response.data.code === 504) {
-    Message.error('连接超时')
+    Message.error('连接超时，请重试')
+  } else if (response.data.code === 404) {
+    Message.error('请求的链接不存在，请联系管理员')
   } else {
     Message.error('发生未知错误')
   }
