@@ -115,7 +115,7 @@ export default {
       parentIdTree: [],
       classifyTypes: [],
       currentChooseParentDesignation: null,
-      currentChooseParentId: null,
+      currentChooseParent: null,
       classifyTypeDesignation: null,
       modifyClassifyForm: {},
       newClassifyForm: {
@@ -150,6 +150,7 @@ export default {
   methods: {
     chooseParentId (node) {
       console.log(node)
+      this.currentChooseParent = node
     },
     deleteClassify () {
       if (this.deleteData.length === 0) {
@@ -169,11 +170,10 @@ export default {
     tableSelect (selection) {
       this.deleteData = selection
     },
-    chooseParentCode (node) {
-      this.newClassifyForm.parentCode = node.code
-      this.modifyClassifyForm.parentCode = node.code
-    },
     confirmParentId () {
+      this.newClassifyForm.parentId = this.currentChooseParent.id
+      this.currentChooseParentDesignation = this.currentChooseParent.label
+      console.log(this.newClassifyForm)
       this.chooseParentIdDialogVisible = false
     },
     searchByKeyWord () {

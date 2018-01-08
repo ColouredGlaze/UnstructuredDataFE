@@ -74,7 +74,7 @@
           <el-input v-model="modifyDigitalDictionaryForm.designation" placeholder="请输入数据字典的名称"></el-input>
         </el-form-item>
         <el-form-item label="父类编码" prop="parentCode">
-          <el-input v-model="modifyDigitalDictionaryForm.parentCode" placeholder="请选择父类编码" :disabled="true">
+          <el-input v-model="newDigitalDictionary.parentCode" placeholder="请选择父类编码" :disabled="true">
             <el-button @click="chooseParentCodeDialogVisible = true" slot="append" icon="el-icon-search"></el-button>
           </el-input>
         </el-form-item>
@@ -106,15 +106,15 @@ export default {
   name: 'DigitalDictionary',
   data () {
     return {
-      currentChooseParentCode: null,
+      currentChooseParent: null,
       chooseParentCodeTree: [],
       deleteData: [],
       modifyDigitalDictionaryForm: {},
       newDigitalDictionary: {
         designation: null,
-        parentCode: null,
         code: null,
-        description: null
+        description: null,
+        parentCode: null
       },
       tableData: [],
       searchDigitalDictionary: {
@@ -161,11 +161,10 @@ export default {
       this.deleteData = selection
     },
     chooseParentCode (node) {
-      this.currentChooseParentCode = node.code
-      this.modifyDigitalDictionaryForm.parentCode = node.code
+      this.currentChooseParent = node
     },
     confirmParentCode () {
-      this.newDigitalDictionary.parentCode = this.currentChooseParentCode
+      this.newDigitalDictionary.parentCode = this.currentChooseParent.code
       this.chooseParentCodeDialogVisible = false
     },
     searchByKeyWord () {
