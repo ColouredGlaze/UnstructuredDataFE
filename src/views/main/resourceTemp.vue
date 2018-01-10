@@ -21,10 +21,15 @@
         <el-table-column type="selection"></el-table-column>
         <el-table-column prop="designation" label="资源名称" show-overflow-tooltip></el-table-column>
         <el-table-column prop="author" label="作者"></el-table-column>
+        <el-table-column prop="operation" label="操作"></el-table-column>
         <el-table-column prop="classify" label="所属分类"></el-table-column>
-        <el-table-column prop="description" label="描述"></el-table-column>
+        <el-table-column prop="description" label="描述" show-overflow-tooltip></el-table-column>
         <el-table-column prop="resourceType" label="资源类型"></el-table-column>
-        <el-table-column prop="resourceSize" label="资源大小"></el-table-column>
+        <el-table-column prop="resourceSize" label="资源大小">
+          <template slot-scope="scope">
+            <span>{{scope.row.resourceSize}} KB</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="createTime" label="创建时间"></el-table-column>
         <el-table-column label="下载" width="100">
           <template slot-scope="scope">
@@ -36,6 +41,7 @@
     <div class="pagination-container">
         <el-pagination
           id="pagination"
+          background
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="currentPage"
@@ -113,6 +119,22 @@
       </span>
     </el-dialog>
 
+    <el-dialog title="审核资源" :visible.sync="auditResourceDialogVisible" width="30%" center>
+      <el-form :model="auditResourceForm" :rules="auditResourceFormRules" ref="auditResourceForm">
+        <el-form-item label="审核结果" prop="status">
+          <el-select v-model="auditResourceForm.status">
+            <el-option v-for="item in auditStatusOption" :key="item.code" :label="item.designation" :value="item.code"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="备注：" prop="remark">
+          <el-input v-model="auditResourceForm.remark" type="textarea" :rows="3"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer">
+        <el-button @click="updateAuditData" type="primary">确 定</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -126,6 +148,7 @@ export default {
       fileList: [],
       resourceTypes: [],
       classifyIdTree: [],
+      auditStatusOption: [],
       currentChooseClassifyDesignation: null,
       currentChooseClassify: null,
       searchResourceTemp: {
@@ -150,7 +173,19 @@ export default {
           {require: true, message: '请选择资源的分类，如果没有分类选项，请先添加资源分类', trigger: 'change'}
         ]
       },
+      auditResourceFormRules: {
+        remark: [
+          {required: true, message: '请输入备注', trigger: 'change'},
+          {min: 1, max: 300, message: '字符长度在 1 到 300 字符之间', trigger: 'change'}
+        ]
+      },
+      auditResourceForm: {
+        resourceTemps: [],
+        status: null,
+        remark: null
+      },
       uploadDialogVisible: false,
+      auditResourceDialogVisible: false,
       chooseClassifyIdDialogVisible: false,
       tableData: [],
       auditData: [],
@@ -160,6 +195,18 @@ export default {
     }
   },
   methods: {
+    updateAuditData () {
+      this.$refs['auditResourceForm'].validate(async (valid) => {
+        if (valid) {
+          console.log(this.auditResourceForm)
+          const result = await this.api.post('/AuditApi/update', this.auditResourceForm)
+          if (result !== null) {
+            this.getTableDate()
+            this.auditResourceDialogVisible = false            
+          }
+        }
+      })
+    },
     handleClose (tag) {
       this.uploadForm.tags.splice(this.uploadForm.tags.indexOf(tag), 1)
     },
@@ -185,12 +232,21 @@ export default {
     },
     // eslint-disable-next-line
     onError (error, file, fileList) {
-      this.$message.warning('资源上传失败')
+      if (error.status === 500) {
+        this.$message.error('服务器出错，请联系管理员')
+      } else if (error.status === 504) {
+        this.$message.error('连接超时，请重试')
+      } else if (error.status === 404) {
+        this.$message.error('请求的链接不存在，请联系管理员')
+      } else {
+        this.$message.error('发生未知错误')
+      }
       this.$refs['uploadFormRef'].resetFields()
       this.uploadForm.designation = ''
       this.fileList = []
       this.currentChooseClassifyDesignation = null
       this.uploadDialogVisible = false
+      this.getTableDate()
     },
     onSuccess (response, file, fileList) {
       if (response.code === 3) {
@@ -203,6 +259,7 @@ export default {
       this.fileList = []
       this.currentChooseClassifyDesignation = null
       this.uploadDialogVisible = false
+      this.getTableDate()
     },
     beforeUpload (file) {
       if ((file.size / (1024 * 1024)) > 130) {
@@ -240,18 +297,11 @@ export default {
     },
     auditResourceTemp () {
       if (this.auditData.length === 0) {
-        this.$message.info('请选择要删除的专题')
-      } else {
-        this.$confirm('确定要删除当前选中的 ' + this.auditData.length + ' 个专题吗？', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(async () => {
-          await this.api.post('/ResourceTempApi/audit', this.auditData)
-        }).then(() => {
-          this.init()
-        })
+        this.$message.info('请选择要审核的资源')
+        return
       }
+      this.auditResourceForm.resourceTemps = this.auditData
+      this.auditResourceDialogVisible = true
     },
     confirmResourceType () {
       this.currentChooseResourceTypeDesignation = this.currentChooseType.designation
@@ -268,6 +318,19 @@ export default {
       if (result !== null) {
         this.resourceTypes = result
         this.uploadForm.resourceType = this.resourceTypes[0].code
+      }
+    },
+    async initAuditStatusOption () {
+      const result = await this.api.post('/DigitalDictionaryApi/getChildrenForSelect', {parentCode: '005'})
+      if (result !== null) {
+        this.auditStatusOption = result
+        for (let i = 0; i < this.auditStatusOption.length; i++) {
+          if (this.auditStatusOption[i].code === '005003') {
+            this.auditStatusOption.splice(i, 1)
+            break
+          }
+        }
+        this.auditResourceForm.status = this.auditStatusOption[0].code
       }
     },
     async initClassifyIds () {
@@ -289,6 +352,7 @@ export default {
       this.getTableDate()
       this.initClassifyIds()
       this.initResourceType()
+      this.initAuditStatusOption()
     },
     handleSizeChange (val) {
       this.pageSize = val

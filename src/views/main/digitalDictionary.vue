@@ -36,6 +36,7 @@
     <div class="pagination-container">
         <el-pagination
           id="pagination"
+          background
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="currentPage"
