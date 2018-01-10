@@ -14,10 +14,22 @@
         <i class="icon-menu-item"><icon name="dissertationManage" scale="2"></icon></i>
         <span slot="title">专题管理</span>
       </el-menu-item>
+      <el-menu-item index="/main/resourceTemp">
+        <i class="icon-menu-item"><icon name="auditResource" scale="2"></icon></i>
+        <span slot="title">审核资源</span>
+      </el-menu-item>
+      <!-- <el-menu-item index="/">
+        <i class="el-icon-document"></i>
+        <span slot="title">系统资源</span>
+      </el-menu-item>
+      <el-menu-item index="/">
+        <i class="icon-menu-item"><icon name="auditRecord" scale="2"></icon></i>
+        <span slot="title">审核记录</span>
+      </el-menu-item> -->
       <el-submenu index="1">
         <template slot="title">
           <i class="el-icon-setting"></i>
-          <span>系统管理</span>
+          <span>系统设置</span>
         </template>
         <el-menu-item index="1-1">菜单管理</el-menu-item>
         <el-menu-item index="/main/digitalDictionary">数据字典</el-menu-item>

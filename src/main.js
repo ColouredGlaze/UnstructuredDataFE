@@ -25,7 +25,7 @@ new Vue({
 router.beforeEach((to, from, next) => {
   // const result = this.api.post('/getUid')
   // console.log(result)
-  console.log(to.path)
   console.log(from.path)
+  console.log(to.path)
   next()
 })

@@ -187,6 +187,7 @@ export default {
     confirmParentId () {
       this.currentChooseParentDesignation = this.currentChooseParent.label
       this.newDissertationForm.parentId = this.currentChooseParent.id
+      this.newDissertationForm.classifyId = this.currentChooseParent.classifyId
       this.modifyDissertationForm.parentId = this.currentChooseParent.id
       this.modifyDissertationForm.classifyId = this.currentChooseParent.classifyId
       this.chooseParentIdDialogVisible = false

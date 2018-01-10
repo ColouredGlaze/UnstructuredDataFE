@@ -6,7 +6,7 @@ import DigitalDictionary from '@/views/main/digitalDictionary'
 import UserManage from '@/views/main/userManage'
 import ClassifyManage from '@/views/main/classifyManage'
 import DissertationManage from '@/views/main/dissertationManage'
-
+import ResourceTemp from '@/views/main/resourceTemp'
 Vue.use(Router)
 
 export default new Router({
@@ -41,6 +41,11 @@ export default new Router({
           path: 'dissertationManage',
           name: 'DissertationManage',
           component: DissertationManage
+        },
+        {
+          path: 'resourceTemp',
+          name: 'ResourceTemp',
+          component: ResourceTemp
         }
       ]
     }
