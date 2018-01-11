@@ -30,7 +30,7 @@
             <span>{{scope.row.resourceSize}} KB</span>
           </template>
         </el-table-column>
-        <el-table-column prop="createTime" label="创建时间"></el-table-column>
+        <el-table-column prop="uploadTime" label="上传时间"></el-table-column>
         <el-table-column label="下载" width="100">
           <template slot-scope="scope">
             <el-button @click="modify(scope.row)" type="primary">下 载</el-button>
@@ -202,7 +202,8 @@ export default {
           const result = await this.api.post('/AuditApi/update', this.auditResourceForm)
           if (result !== null) {
             this.getTableDate()
-            this.auditResourceDialogVisible = false            
+            this.auditResourceDialogVisible = false
+            this.$refs['auditResourceForm'].resetFields()
           }
         }
       })

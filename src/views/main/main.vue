@@ -31,7 +31,6 @@
           <i class="el-icon-setting"></i>
           <span>系统设置</span>
         </template>
-        <el-menu-item index="1-1">菜单管理</el-menu-item>
         <el-menu-item index="/main/digitalDictionary">数据字典</el-menu-item>
         <el-menu-item index="1-3">登录日志</el-menu-item>
       </el-submenu>
