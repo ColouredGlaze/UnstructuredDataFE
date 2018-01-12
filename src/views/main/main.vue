@@ -21,18 +21,18 @@
       <!-- <el-menu-item index="/">
         <i class="el-icon-document"></i>
         <span slot="title">系统资源</span>
-      </el-menu-item>
-      <el-menu-item index="/">
+      </el-menu-item> -->
+      <el-menu-item index="/main/auditRecord">
         <i class="icon-menu-item"><icon name="auditRecord" scale="2"></icon></i>
         <span slot="title">审核记录</span>
-      </el-menu-item> -->
+      </el-menu-item>
       <el-submenu index="1">
         <template slot="title">
           <i class="el-icon-setting"></i>
           <span>系统设置</span>
         </template>
         <el-menu-item index="/main/digitalDictionary">数据字典</el-menu-item>
-        <el-menu-item index="1-3">登录日志</el-menu-item>
+        <el-menu-item index="/main/loginLog">登录日志</el-menu-item>
       </el-submenu>
     </el-menu>
   </div>

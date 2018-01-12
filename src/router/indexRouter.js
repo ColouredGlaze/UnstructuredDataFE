@@ -7,6 +7,9 @@ import UserManage from '@/views/main/userManage'
 import ClassifyManage from '@/views/main/classifyManage'
 import DissertationManage from '@/views/main/dissertationManage'
 import ResourceTemp from '@/views/main/resourceTemp'
+import AuditRecord from '@/views/main/auditRecord'
+import LoginLog from '@/views/main/loginLog'
+
 Vue.use(Router)
 
 export default new Router({
@@ -46,6 +49,16 @@ export default new Router({
           path: 'resourceTemp',
           name: 'ResourceTemp',
           component: ResourceTemp
+        },
+        {
+          path: 'auditRecord',
+          name: 'AuditRecord',
+          component: AuditRecord
+        },
+        {
+          path: 'loginLog',
+          name: 'LoginLog',
+          component: LoginLog
         }
       ]
     }
