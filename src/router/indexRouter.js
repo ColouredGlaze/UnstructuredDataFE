@@ -9,6 +9,7 @@ import DissertationManage from '@/views/main/dissertationManage'
 import ResourceTemp from '@/views/main/resourceTemp'
 import AuditRecord from '@/views/main/auditRecord'
 import LoginLog from '@/views/main/loginLog'
+import SystemResource from '@/views/main/systemResource'
 
 Vue.use(Router)
 
@@ -59,6 +60,11 @@ export default new Router({
           path: 'loginLog',
           name: 'LoginLog',
           component: LoginLog
+        },
+        {
+          path: 'systemResource',
+          name: 'SystemResource',
+          component: SystemResource
         }
       ]
     }

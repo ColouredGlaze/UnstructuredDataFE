@@ -18,10 +18,10 @@
         <i class="icon-menu-item"><icon name="auditResource" scale="2"></icon></i>
         <span slot="title">审核资源</span>
       </el-menu-item>
-      <!-- <el-menu-item index="/">
+      <el-menu-item index="/main/systemResource">
         <i class="el-icon-document"></i>
         <span slot="title">系统资源</span>
-      </el-menu-item> -->
+      </el-menu-item>
       <el-menu-item index="/main/auditRecord">
         <i class="icon-menu-item"><icon name="auditRecord" scale="2"></icon></i>
         <span slot="title">审核记录</span>

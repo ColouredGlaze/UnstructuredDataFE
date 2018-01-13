@@ -67,6 +67,20 @@ function checkCode (response) {
   }
   return null
 }
+// downloadUrl
+// 作者：Geovanni.zhang
+// 链接：https://www.zhihu.com/question/263323250/answer/267842980
+// 来源：知乎
+// 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+function downloadUrl (response) {
+  let iframe = document.createElement('iframe')
+  iframe.style.display = 'none'
+  iframe.src = response.request.responseURL
+  iframe.onload = function () {
+    document.body.removeChild(iframe)
+  }
+  document.body.appendChild(iframe)
+}
 
 export default {
   post (url, data) {
@@ -84,5 +98,13 @@ export default {
       params,
       timeout: 30000
     }).then(checkStatus).then(checkCode)
+  },
+  download (url, params) {
+    return axios({
+      method: 'get',
+      url,
+      params,
+      timeout: 30000
+    }).then(checkStatus).then(downloadUrl)
   }
 }

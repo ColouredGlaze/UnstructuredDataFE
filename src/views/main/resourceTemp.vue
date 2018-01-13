@@ -33,7 +33,7 @@
         <el-table-column prop="uploadTime" label="上传时间"></el-table-column>
         <el-table-column label="下载" width="100">
           <template slot-scope="scope">
-            <el-button @click="modify(scope.row)" type="primary">下 载</el-button>
+            <el-button @click="downloadResource(scope.row)" type="primary">下 载</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -195,10 +195,20 @@ export default {
     }
   },
   methods: {
+    downloadResource (resource) {
+      let resourceName = resource.designation
+      let temp = resourceName
+      let index = 0
+      do {
+        index = temp.indexOf('.')
+        temp = temp.substring(index + 1)
+      } while (index !== -1)
+      const resourceFileName = resource.id + resourceName.substring(resourceName.indexOf(temp) - 1)
+      this.api.download('/FileApi/download', {resourceName: resourceName, resourceFileName: resourceFileName})
+    },
     updateAuditData () {
       this.$refs['auditResourceForm'].validate(async (valid) => {
         if (valid) {
-          console.log(this.auditResourceForm)
           const result = await this.api.post('/AuditApi/update', this.auditResourceForm)
           if (result !== null) {
             this.getTableDate()
