@@ -12,6 +12,7 @@
         </el-form>
       </el-col>
       <el-col :span="18" style="text-align: right;">
+        <el-button @click="modifyDissertation" type="primary" icon="el-icon-edit">修改专题</el-button>
       </el-col>
     </el-row>
     <div class="table-container">
@@ -21,14 +22,16 @@
         <el-table-column prop="author" label="作者"></el-table-column>
         <el-table-column prop="classify" label="所属分类"></el-table-column>
         <el-table-column prop="dissertation" label="所属专题"></el-table-column>
-        <el-table-column prop="description" label="描述" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="resourceType" label="资源类型"></el-table-column>
+        <el-table-column prop="resourceType" label="资源类型"></el-table-column>        
+        <el-table-column prop="description" label="资源描述" show-overflow-tooltip></el-table-column>
         <el-table-column prop="resourceSize" label="资源大小">
           <template slot-scope="scope">
             <span>{{scope.row.resourceSize}} KB</span>
           </template>
         </el-table-column>
-        <el-table-column prop="uploadTime" label="上传时间"></el-table-column>
+        <el-table-column prop="downloadNum" label="下载数"></el-table-column>
+        <el-table-column prop="collectionNum" label="收藏数"></el-table-column>
+        <el-table-column prop="uploadTime" label="上传时间" show-overflow-tooltip></el-table-column>
         <el-table-column label="下载" width="100">
           <template slot-scope="scope">
             <el-button @click="downloadResource(scope.row)" type="primary">下 载</el-button>
@@ -50,10 +53,10 @@
         </el-pagination>
     </div>
 
-    <el-dialog title="选择所属分类" :visible.sync="chooseClassifyIdDialogVisible" width="30%" center>
-      <el-tree :data="classifyIdTree" @node-click="chooseclassifyId" ></el-tree>
+    <el-dialog title="选择所属专题" :visible.sync="chooseDissertationIdDialogVisible" width="30%" center>
+      <el-tree :data="dissertationIdTree" @node-click="chooseDissertation"></el-tree>
       <span slot="footer">
-        <el-button @click="confirmClassifyId" type="primary">确 定</el-button>
+        <el-button @click="confirmDissertationId" type="primary">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -65,80 +68,71 @@ export default {
   name: 'ResourceTemp',
   data () {
     return {
-      inputValue: null,
-      resourceTypes: [],
-      classifyIdTree: [],
-      auditStatusOption: [],
-      currentChooseClassifyDesignation: null,
-      currentChooseClassify: null,
+      dissertationIdTree: [],
+      chooseDissertationIdDialogVisible: false,
       searchResourceTemp: {
         keyWord: null
       },
-      uploadForm: {
-        designation: '',
-        classifyId: '',
-        resourceType: '',
-        description: '',
-        resourceSize: 0,
-        tags: []
-      },
-      chooseClassifyIdDialogVisible: false,
       tableData: [],
-      auditData: [],
+      modifyDissertationData: [],
       currentPage: 1,
       pageSize: 12,
       totalQuantity: 0
     }
   },
   methods: {
-    downloadResource (resource) {
-      let resourceName = resource.designation
-      let temp = resourceName
-      let index = 0
-      do {
-        index = temp.indexOf('.')
-        temp = temp.substring(index + 1)
-      } while (index !== -1)
-      const resourceFileName = resource.id + resourceName.substring(resourceName.indexOf(temp) - 1)
-      this.api.download('/FileApi/download', {resourceName: resourceName, resourceFileName: resourceFileName})
-    },
-    chooseclassifyId (node) {
-      this.currentChooseClassify = node
-    },
-    auditResourceTemp () {
-      if (this.auditData.length === 0) {
-        this.$message.info('请选择要审核的资源')
+    modifyDissertation () {
+      if (this.modifyDissertationData.length <= 0) {
+        this.$message.info('请选择要修改专题的资源')
         return
       }
-      this.auditResourceForm.resourceTemps = this.auditData
-      this.auditResourceDialogVisible = true
+      this.chooseDissertationIdDialogVisible = true
     },
-    confirmResourceType () {
-      this.currentChooseResourceTypeDesignation = this.currentChooseType.designation
-      this.uploadForm.reourceType = this.currentChooseReourceType.code
-      this.chooseResourceTypeDialogVisible = false
+    downloadResource (resource) {
+      const resourceName = resource.designation
+      const resourceFileName = resource.resourceFileName
+      this.api.download('/FileApi/download', {resourceName: resourceName, resourceFileName: resourceFileName})
     },
-    confirmClassifyId () {
-      this.currentChooseClassifyDesignation = this.currentChooseClassify.label
-      this.uploadForm.classifyId = this.currentChooseClassify.id
-      this.chooseClassifyIdDialogVisible = false
+    chooseDissertation (node) {
+      this.currentChooseDissertation = node
+    },
+    confirmDissertationId () {
+      if (this.currentChooseDissertation === null) {
+        this.$message.info('请选择要修改的专题')
+        return
+      }
+      this.$confirm('请确认将选中的 ' + this.modifyDissertationData.length + ' 个资源的专题修改为：' + this.currentChooseDissertation.label,
+        '提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async () => {
+          let modifyData = {resources: this.modifyDissertationData, dissertationId: this.currentChooseDissertation.id}
+          const result = await this.api.post('/ResourceApi/modifyDissertation', modifyData)
+          if (result !== null) {
+            this.getTableDate()
+            this.chooseDissertationIdDialogVisible = false
+          }
+        }).catche(() => {
+          this.chooseDissertationIdDialogVisible = false
+          this.$message.info('您取消了修改资源所属的专题')
+        })
     },
     async initResourceType () {
       const result = await this.api.post('/DigitalDictionaryApi/getChildrenForSelect', {parentCode: '003'})
       if (result !== null) {
         this.resourceTypes = result
-        this.uploadForm.resourceType = this.resourceTypes[0].code
       }
     },
-    async initClassifyIds () {
-      const result = await this.api.post('/ClassifyApi/getParentTree', {classifyType: '006001'})
-      // 初始化资源所属类别选项
+    async initDissertationIds () {
+      const result = await this.api.post('/DissertationApi/getParentTree')
       if (result !== null) {
-        this.classifyIdTree = result
+        this.dissertationIdTree = result
       }
     },
     async getTableDate () {
-      const result = await this.api.post('/ResourceTempApi/search',
+      const result = await this.api.post('/ResourceApi/search',
       {currentPage: this.currentPage, pageSize: this.pageSize, keyWord: this.searchResourceTemp.keyWord})
       if (result != null) {
         this.totalQuantity = result.totalElements
@@ -147,7 +141,7 @@ export default {
     },
     init () {
       this.getTableDate()
-      this.initClassifyIds()
+      this.initDissertationIds()
       this.initResourceType()
     },
     handleSizeChange (val) {
@@ -159,7 +153,7 @@ export default {
       this.getTableDate()
     },
     tableSelect (selection) {
-      this.auditData = selection
+      this.modifyDissertationData = selection
     },
     searchByKeyWord () {
       this.getTableDate()

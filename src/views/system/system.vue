@@ -2,27 +2,27 @@
 <div>
   <div class="menu-container">
     <el-menu :router="true" background-color="#2d3a4b" text-color="#fff" active-text-color="#ffd04b" style="border-right: 0px">
-      <el-menu-item index="/main/userManage">
+      <el-menu-item index="/system/userManage">
         <i class="icon-menu-item"><icon name="userManage" scale="2"></icon></i>
         <span slot="title">用户管理</span>
       </el-menu-item>
-      <el-menu-item index="/main/classifyManage">
+      <el-menu-item index="/system/classifyManage">
         <i class="el-icon-menu"></i>
         <span slot="title">分类管理</span>
       </el-menu-item>
-      <el-menu-item index="/main/dissertationManage">
+      <el-menu-item index="/system/dissertationManage">
         <i class="icon-menu-item"><icon name="dissertationManage" scale="2"></icon></i>
         <span slot="title">专题管理</span>
       </el-menu-item>
-      <el-menu-item index="/main/resourceTemp">
+      <el-menu-item index="/system/resourceTemp">
         <i class="icon-menu-item"><icon name="auditResource" scale="2"></icon></i>
         <span slot="title">审核资源</span>
       </el-menu-item>
-      <el-menu-item index="/main/systemResource">
+      <el-menu-item index="/system/resource">
         <i class="el-icon-document"></i>
         <span slot="title">系统资源</span>
       </el-menu-item>
-      <el-menu-item index="/main/auditRecord">
+      <el-menu-item index="/system/auditRecord">
         <i class="icon-menu-item"><icon name="auditRecord" scale="2"></icon></i>
         <span slot="title">审核记录</span>
       </el-menu-item>
@@ -31,8 +31,8 @@
           <i class="el-icon-setting"></i>
           <span>系统设置</span>
         </template>
-        <el-menu-item index="/main/digitalDictionary">数据字典</el-menu-item>
-        <el-menu-item index="/main/loginLog">登录日志</el-menu-item>
+        <el-menu-item index="/system/digitalDictionary">数据字典</el-menu-item>
+        <el-menu-item index="/system/loginLog">登录日志</el-menu-item>
       </el-submenu>
     </el-menu>
   </div>

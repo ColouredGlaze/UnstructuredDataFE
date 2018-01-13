@@ -12,7 +12,7 @@
         </el-form>
       </el-col>
       <el-col :span="18" style="text-align: right;">
-        <el-button @click="newDialogVisible = true" type="primary" icon="el-icon-edit">新增数据字典</el-button>
+        <el-button @click="newDialogVisible = true" type="primary" icon="el-icon-plus">新增数据字典</el-button>
         <el-button @click="deleteDigitalDictionary" type="primary" icon="el-icon-delete">删除数据字典</el-button>
       </el-col>
     </el-row>

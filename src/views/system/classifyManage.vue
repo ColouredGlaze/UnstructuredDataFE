@@ -12,7 +12,7 @@
         </el-form>
       </el-col>
       <el-col :span="18" style="text-align: right;">
-        <el-button @click="newDialogVisible = true" type="primary" icon="el-icon-edit">新增分类</el-button>
+        <el-button @click="newDialogVisible = true" type="primary" icon="el-icon-plus">新增分类</el-button>
         <el-button @click="deleteClassify" type="primary" icon="el-icon-delete">删除分类</el-button>
       </el-col>
     </el-row>

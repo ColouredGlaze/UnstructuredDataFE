@@ -1,15 +1,15 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '@/views/login/login'
-import Main from '@/views/main/main'
-import DigitalDictionary from '@/views/main/digitalDictionary'
-import UserManage from '@/views/main/userManage'
-import ClassifyManage from '@/views/main/classifyManage'
-import DissertationManage from '@/views/main/dissertationManage'
-import ResourceTemp from '@/views/main/resourceTemp'
-import AuditRecord from '@/views/main/auditRecord'
-import LoginLog from '@/views/main/loginLog'
-import SystemResource from '@/views/main/systemResource'
+import Main from '@/views/system/system'
+import DigitalDictionary from '@/views/system/digitalDictionary'
+import UserManage from '@/views/system/userManage'
+import ClassifyManage from '@/views/system/classifyManage'
+import DissertationManage from '@/views/system/dissertationManage'
+import ResourceTemp from '@/views/system/resourceTemp'
+import AuditRecord from '@/views/system/auditRecord'
+import LoginLog from '@/views/system/loginLog'
+import Resource from '@/views/system/resource'
 
 Vue.use(Router)
 
@@ -22,7 +22,7 @@ export default new Router({
       component: Login
     },
     {
-      path: '/main',
+      path: '/system',
       name: 'Main',
       component: Main,
       children: [
@@ -62,9 +62,9 @@ export default new Router({
           component: LoginLog
         },
         {
-          path: 'systemResource',
-          name: 'SystemResource',
-          component: SystemResource
+          path: 'resource',
+          name: 'Resource',
+          component: Resource
         }
       ]
     }

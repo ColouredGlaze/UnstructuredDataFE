@@ -12,7 +12,7 @@
         </el-form>
       </el-col>
       <el-col :span="18" style="text-align: right;">
-        <el-button @click="newDialogVisible = true" type="primary" icon="el-icon-edit">新增管理员</el-button>
+        <el-button @click="newDialogVisible = true" type="primary" icon="el-icon-plus">新增管理员</el-button>
         <el-button @click="deleteUserInfo" type="primary" icon="el-icon-delete">删除用户/管理员</el-button>
         <el-button @click="freeze" type="primary">冻结帐号</el-button>
         <el-button @click="unfreeze" type="primary">解冻账号</el-button>

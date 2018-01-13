@@ -175,7 +175,7 @@ export default {
     async login () {
       const result = await this.api.post('/UserInfoApi/login', this.loginForm)
       if (result !== null) {
-        this.$router.push('/main')
+        this.$router.push('/system')
       }
     },
     // 初始化数据
