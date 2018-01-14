@@ -10,6 +10,8 @@ import ResourceTemp from '@/views/system/resourceTemp'
 import AuditRecord from '@/views/system/auditRecord'
 import LoginLog from '@/views/system/loginLog'
 import Resource from '@/views/system/resource'
+import Client from '@/views/client/client'
+import UploadResource from '@/views/client/menu/uploadResource'
 
 Vue.use(Router)
 
@@ -20,6 +22,18 @@ export default new Router({
       path: '/',
       name: 'Login',
       component: Login
+    },
+    {
+      path: '/client',
+      name: 'Client',
+      component: Client,
+      children: [
+        {
+          path: 'uploadResource',
+          name: 'UploadResource',
+          component: UploadResource
+        }
+      ]
     },
     {
       path: '/system',

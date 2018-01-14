@@ -3,7 +3,7 @@
     <el-col :span="10">&nbsp;</el-col>
       <el-col :span="4">
         <div class="title-container">
-          <h3 class="title">非结构化数据管理</h3>
+          <h3 class="title">非结构化数据共享</h3>
         </div>
         <div class="login-form">
           <el-form ref="form" :model="loginForm">
@@ -138,7 +138,7 @@ export default {
       professions: [],
       sexs: [],
       loginForm: {
-        userName: '超级管理员',
+        userName: '用户呀',
         userPassword: 'aaaaaa'
       },
       confirmPassword: '',
@@ -175,7 +175,11 @@ export default {
     async login () {
       const result = await this.api.post('/UserInfoApi/login', this.loginForm)
       if (result !== null) {
-        this.$router.push('/system')
+        if (result === '008001') {
+          this.$router.push('/system')
+        } else {
+          this.$router.push('/client')
+        }
       }
     },
     // 初始化数据

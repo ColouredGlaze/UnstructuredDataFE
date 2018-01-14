@@ -61,7 +61,10 @@ export default {
       // inter: true
     }
   },
-  methods: {}
+  methods: {},
+  mounted () {
+    this.$router.push('/system/userManage')
+  }
 }
 </script>
 
