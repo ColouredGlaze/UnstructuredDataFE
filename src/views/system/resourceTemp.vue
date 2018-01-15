@@ -54,9 +54,6 @@
 
     <el-dialog title="上传资源" :visible.sync="uploadDialogVisible"  width="36%" center>
       <el-form :model="uploadForm" :rules="uploadFormRules" ref="uploadFormRef"  label-width="79px">
-        <el-form-item label="资源名称" prop="designation">
-          <el-input v-model="uploadForm.designation" :disabled="true" placeholder="请选择文件"></el-input>
-        </el-form-item>
         <el-form-item label="资源分类" prop="classifyId">
           <el-input v-model="currentChooseClassifyDesignation" :disabled="true" placeholder="请选择资源所属的分类">
             <el-button slot="append" @click="chooseClassifyIdDialogVisible = true" icon="el-icon-search"></el-button>
@@ -155,7 +152,6 @@ export default {
         keyWord: null
       },
       uploadForm: {
-        designation: '',
         classifyId: '',
         resourceType: '',
         description: '',
@@ -163,14 +159,11 @@ export default {
         tags: []
       },
       uploadFormRules: {
-        designation: [
-          {required: true, message: '请选择要上传的资源', trigger: 'change'}
+        classifyId: [
+          {require: true, message: '请选择资源的分类，如果没有分类选项，请先添加资源分类', trigger: 'change'}
         ],
         description: [
           {max: 300, message: '描述资源的文字长度在 300 个字符以内', trigger: 'change'}
-        ],
-        classifyId: [
-          {require: true, message: '请选择资源的分类，如果没有分类选项，请先添加资源分类', trigger: 'change'}
         ]
       },
       auditResourceFormRules: {
@@ -284,7 +277,7 @@ export default {
       this.uploadForm.resourceSize = this.getFileSize(file)
     },
     submitUpload () {
-      if (this.uploadForm.classifyId === null) {
+      if (this.uploadForm.classifyId === null || this.uploadForm.classifyId === '') {
         this.$message.info('请选择资源的分类，如果没有分类选项，请先添加资源分类')
         return
       }
