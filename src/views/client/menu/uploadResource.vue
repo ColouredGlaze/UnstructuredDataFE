@@ -214,10 +214,4 @@ export default {
   margin-left: 10px;
   vertical-align: bottom;
 }
-.el-upload {
-  width: 100%;
-}
-.el-upload-dragger {
-  width: 100%;
-}
 </style>
