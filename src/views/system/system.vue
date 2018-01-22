@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="system">
   <div class="menu-container">
     <el-menu :router="true" background-color="#2d3a4b" text-color="#fff" active-text-color="#ffd04b" style="border-right: 0px">
       <el-menu-item index="/system/userManage">
@@ -69,6 +69,12 @@ export default {
 </script>
 
 <style scoped>
+.system {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background: #ffffff;
+}
 .icon-menu-item{
   vertical-align: middle;
   margin-right: 5px;

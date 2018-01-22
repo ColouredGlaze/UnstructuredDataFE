@@ -43,7 +43,7 @@
             </el-form-item>
             <el-form-item>
               <el-button @click="chooseFile" type="primary">选择文件</el-button>
-              <el-button @click="submitUpload" type="primary">上传文件</el-button>
+              <el-button @click="submitUpload" type="primary">开始上传</el-button>
               <el-button @click="resetData" type="success" style="float: right;">重 置</el-button>
             </el-form-item>
           </el-form>
@@ -64,8 +64,8 @@
             action="/ud/ResourceTempApi/uploadFiles"            
             drag
             multiple>
-            <i class="el-icon-upload"></i>
-            <div class="el-upload__text" id="uploadFileEle">将文件拖到此处，或<em>点击上传</em></div>
+            <i id="uploadFileEle" class="el-icon-upload"></i>
+            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
             <div class="el-upload__tip" slot="tip">文件大小不超过 130 MB</div>
           </el-upload>
         </el-tab-pane>

@@ -12,7 +12,9 @@ import LoginLog from '@/views/system/loginLog'
 import Resource from '@/views/system/resource'
 import Client from '@/views/client/client'
 import UploadResource from '@/views/client/menu/uploadResource'
-
+import ClientIndex from '@/views/client/menu/index'
+import ListResource from '@/views/client/menu/index/listResource'
+import SearchResourceResult from '@/views/client/menu/index/searchResourceResult'
 Vue.use(Router)
 
 export default new Router({
@@ -32,6 +34,23 @@ export default new Router({
           path: 'uploadResource',
           name: 'UploadResource',
           component: UploadResource
+        },
+        {
+          path: 'index',
+          name: 'Index',
+          component: ClientIndex,
+          children: [
+            {
+              path: 'searchResourceResult/:keyword',
+              name: 'SearchResourceResult',
+              component: SearchResourceResult
+            },
+            {
+              path: 'listResource',
+              name: 'ListResource',
+              component: ListResource
+            }
+          ]
         }
       ]
     },

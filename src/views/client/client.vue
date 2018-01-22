@@ -7,7 +7,7 @@
           :default-active="activeIndex"
           mode="horizontal"
           @select="handleSelect">
-          <el-menu-item index="1">首页</el-menu-item>
+          <el-menu-item index="/client/index">首页</el-menu-item>
           <el-submenu index="2">
             <template slot="title">个人中心</template>
             <el-menu-item index="2-1">选项1</el-menu-item>
@@ -26,38 +26,34 @@
 export default {
   data () {
     return {
-      activeIndex: '/client/uploadResource'
+      activeIndex: '/client/index'
     }
   },
   methods: {
     handleSelect (key, keyPath) {
-      console.log(key, keyPath)
+      console.log('client.vue:handleSelect' + key)
     }
   },
   mounted () {
-    this.$router.push('/client/uploadResource')
+    this.$router.push('/client/index')
   }
 }
 </script>
 
-<style scoped>
+<style scope>
+.el-upload {
+  width: 100%;
+}
+.el-upload-dragger {
+  width: 100%;
+}
 .menu-container{
   padding-bottom: 20px;
 }
 .main-container{
   width: 70%;
   margin: 0 auto;
-  margin-top: 20px
-}
-.client{
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    /* text-align: center; */
-    background-image: url('../../assets/client-clean.jpg');
-    /* background-repeat: no-repeat; */
-    /* background-size:100% 100%;
-    -moz-background-size:100% 100%; */
+  margin-top: 10px
 }
 </style>
 
