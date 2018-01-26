@@ -39,17 +39,17 @@
       </el-table>
     </div>
     <div class="pagination-container">
-        <el-pagination
-          id="pagination"
-          background
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="currentPage"
-          :page-sizes="[12, 20, 30, 40, 50]"
-          :page-size="pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="totalQuantity">
-        </el-pagination>
+      <el-pagination
+        id="pagination"
+        background
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[12, 20, 30, 40, 50]"
+        :page-size="pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="totalQuantity">
+      </el-pagination>
     </div>
 
     <el-dialog title="上传资源" :visible.sync="uploadDialogVisible"  width="36%" center>
@@ -189,15 +189,7 @@ export default {
   },
   methods: {
     downloadResource (resource) {
-      let resourceName = resource.designation
-      let temp = resourceName
-      let index = 0
-      do {
-        index = temp.indexOf('.')
-        temp = temp.substring(index + 1)
-      } while (index !== -1)
-      const resourceFileName = resource.id + resourceName.substring(resourceName.indexOf(temp) - 1)
-      this.api.download('/FileApi/download', {resourceName: resourceName, resourceFileName: resourceFileName})
+      this.api.download('/FileApi/download', resource.id)
     },
     updateAuditData () {
       this.$refs['auditResourceForm'].validate(async (valid) => {

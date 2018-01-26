@@ -89,9 +89,7 @@ export default {
       this.chooseDissertationIdDialogVisible = true
     },
     downloadResource (resource) {
-      const resourceName = resource.designation
-      const resourceFileName = resource.resourceFileName
-      this.api.download('/FileApi/download', {resourceName: resourceName, resourceFileName: resourceFileName})
+      this.api.download('/FileApi/download', resource.id)
     },
     chooseDissertation (node) {
       this.currentChooseDissertation = node

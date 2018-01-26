@@ -93,7 +93,7 @@
     </el-dialog>
 
     <el-dialog title="选择父级数据字典" :visible.sync="chooseParentCodeDialogVisible" width="30%" center>
-      <el-tree :data="chooseParentCodeTree" @node-click="chooseParentCode" ></el-tree>
+      <el-tree :data="chooseParentCodeTree" @node-click="chooseParentCode"></el-tree>
       <span slot="footer">
         <el-button @click="confirmParentCode" type="primary">确 定</el-button>
       </span>

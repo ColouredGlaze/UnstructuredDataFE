@@ -15,6 +15,7 @@ import UploadResource from '@/views/client/menu/uploadResource'
 import ClientIndex from '@/views/client/menu/index'
 import ListResource from '@/views/client/menu/index/listResource'
 import SearchResourceResult from '@/views/client/menu/index/searchResourceResult'
+import PersonalCenter from '@/views/client/menu/personalCenter'
 Vue.use(Router)
 
 export default new Router({
@@ -51,6 +52,11 @@ export default new Router({
               component: ListResource
             }
           ]
+        },
+        {
+          path: 'personalCenter',
+          name: 'PersonalCenter',
+          component: PersonalCenter
         }
       ]
     },

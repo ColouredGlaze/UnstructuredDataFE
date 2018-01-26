@@ -34,15 +34,16 @@ export default {
       console.log(tag + '------' + param)
     }
   },
-  beforeRouteUpdate (to, from, next) {
-    if (to.path === '/client/index') {
-      this.$router.push('/client/index/listResource')
-    } else {
-      next()
+  watch: {
+    '$route' (to, from) {
+      if (to.path === '/client/index') {
+        this.$router.push('/client/index/listResource')
+      }
     }
   },
   mounted () {
     this.$router.push('/client/index/listResource')
+    this.keyword = 'pdf'
   }
 }
 </script>

@@ -7,6 +7,7 @@ import App from './App.vue'
 import router from './router/indexRouter'
 import Icon from 'vue-svg-icon/Icon.vue'
 import api from './api'
+import 'jquery'
 
 Vue.prototype.api = api
 Vue.component('icon', Icon)

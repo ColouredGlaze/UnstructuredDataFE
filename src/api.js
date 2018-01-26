@@ -8,26 +8,41 @@ axios.defaults.baseURL = '/ud'
 axios.defaults.headers.post['Content-Type'] = 'application/json;charset=utf-8'
 
 // let loadinginstace
+// let requestingCount = 0
+
+// const handleRequestLoading = () => {
+//   if (!requestingCount) {
+//     loadinginstace = Loading.service({ fullscreen: true })
+//   }
+//   requestingCount++
+// }
+
+// const handleResponseLoading = () => {
+//   requestingCount--
+//   if (!requestingCount) {
+//     loadinginstace.close()
+//   }
+// }
 
 // http请求拦截
 axios.interceptors.request.use(config => {
-  // loadinginstace = Loading.service({ fullscreen: true })
+  // handleRequestLoading()
   return config
 }, error => {
-  // loadinginstace.close()
+  // handleResponseLoading()
   return Promise.reject(error)
 })
 // http 响应拦截
 axios.interceptors.response.use(response => {
-  // loadinginstace.close()
+  // handleResponseLoading()
   return response
 }, error => {
-  // loadinginstace.close()
+  // handleResponseLoading()
   return Promise.resolve(error.response)
 })
 
 function checkStatus (response) {
-  // 判断是不是网络出错
+  // 状态码
   if (response.status === 200 || response.status === 304) {
     // 正常访问连接
     return response
@@ -56,6 +71,8 @@ function checkCode (response) {
       // 操作成功，有返回数据，直接将数据返回
       return response.data.data
     }
+  } else if (response.status === 200) {
+    return
   } else if (response.data.code === 500) {
     Message.error('服务器出错，请联系管理员')
   } else if (response.data.code === 504) {
@@ -72,15 +89,16 @@ function checkCode (response) {
 // 链接：https://www.zhihu.com/question/263323250/answer/267842980
 // 来源：知乎
 // 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
-function downloadUrl (response) {
-  let iframe = document.createElement('iframe')
-  iframe.style.display = 'none'
-  iframe.src = response.request.responseURL
-  iframe.onload = function () {
-    document.body.removeChild(iframe)
-  }
-  document.body.appendChild(iframe)
-}
+// function downloadUrl (response) {
+//   console.log(response.request.responseURL)
+//   let iframe = document.createElement('iframe')
+//   iframe.style.display = 'none'
+//   iframe.src = response.request.responseURL
+//   iframe.onload = function () {
+//     document.body.removeChild(iframe)
+//   }
+//   document.body.appendChild(iframe)
+// }
 
 export default {
   post (url, data) {
@@ -99,12 +117,14 @@ export default {
       timeout: 30000
     }).then(checkStatus).then(checkCode)
   },
-  download (url, params) {
-    return axios({
-      method: 'get',
-      url,
-      params,
-      timeout: 30000
-    }).then(checkStatus).then(downloadUrl)
+  download (url, resourceId) {
+    this.post('/ResourceApi/updateDownloadNum', {id: resourceId})
+    let iframe = document.createElement('iframe')
+    iframe.style.display = 'none'
+    iframe.src = 'http://localhost:9363/ud/FileApi/download?resourceId=' + resourceId
+    iframe.onload = function () {
+      document.body.removeChild(iframe)
+    }
+    document.body.appendChild(iframe)
   }
 }

@@ -8,12 +8,7 @@
           mode="horizontal"
           @select="handleSelect">
           <el-menu-item index="/client/index">首页</el-menu-item>
-          <el-submenu index="2">
-            <template slot="title">个人中心</template>
-            <el-menu-item index="2-1">选项1</el-menu-item>
-            <el-menu-item index="2-2">选项2</el-menu-item>
-            <el-menu-item index="2-3">选项3</el-menu-item>
-          </el-submenu>
+          <el-menu-item index="/client/personalCenter">个人中心</el-menu-item>
           <el-menu-item index="/client/uploadResource">上传资源</el-menu-item>
         </el-menu>
       </div>
@@ -41,6 +36,23 @@ export default {
 </script>
 
 <style scope>
+.el-input-group__append, .el-input-group__prepend {
+  border-radius: 0px;
+}
+.el-upload-dragger {
+  border-radius: 0px;
+}
+.el-select-dropdown {
+  border-radius: 0px;
+}
+.el-textarea__inner {
+  border-radius: 0px;
+} .el-input__inner {
+  border-radius: 0px;
+}
+.el-button {
+  border-radius: 0px;
+}
 .el-upload {
   width: 100%;
 }
