@@ -37,7 +37,7 @@
         </el-form-item>
         <el-form-item label="属　于">
           <el-input v-model="collectionFolderForm.parent" placeholder="选择所属收藏夹" :disabled="true">
-            <el-button @click="parentTreeDialogVisible = true" slot="append" icon="el-icon-search"></el-button>
+            <el-button @click="chooseParentCollectionFolder" slot="append" icon="el-icon-search"></el-button>
           </el-input>
         </el-form-item>
         <el-form-item label="描　述" prop="description">
@@ -53,7 +53,6 @@
     <TreeDialog
       ref="treeDialog"
       title="选择所属收藏夹"
-      :treeDialogVisible="parentTreeDialogVisible"
       width="30%"
       :center="true"
       initTreeDialogUrl="/CollectionFolderApi/getParentTree"
@@ -88,11 +87,13 @@ export default {
           {max: 300, message: '长度不能超过 300 个字符', trigger: 'blur'}
         ]
       },
-      collectionFolderDialogVisible: false,
-      parentTreeDialogVisible: false
+      collectionFolderDialogVisible: false
     }
   },
   methods: {
+    chooseParentCollectionFolder () {
+      this.$refs.treeDialog.showTreeDialog()
+    },
     getChooseNode (chooseNode) {
       if (chooseNode === null) {
         return
@@ -103,7 +104,7 @@ export default {
       }
       this.collectionFolderForm.parentId = chooseNode.id
       this.collectionFolderForm.parent = chooseNode.label
-      this.parentTreeDialogVisible = false
+      this.$refs.treeDialog.closeTreeDialog()
     },
     modifyCollectionFolderData (modifyData) {
       this.dialogTitle = '修改收藏夹'

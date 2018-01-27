@@ -188,8 +188,8 @@ export default {
     }
   },
   methods: {
-    downloadResource (resource) {
-      this.api.download('/FileApi/download', resource.id)
+    downloadResource (resourceTemp) {
+      this.api.download({resourceTempId: resourceTemp.id})
     },
     updateAuditData () {
       this.$refs['auditResourceForm'].validate(async (valid) => {

@@ -61,7 +61,9 @@ function checkCode (response) {
   if (response.data.code === 3 || response.data.code === 0) {
     if (response.data.code === 3 && typeof response.data.data === 'undefined') {
       // 操作成功，无返回数据
-      Message.success(response.data.msg)
+      if (response.data.msg.length > 0) {
+        Message.success(response.data.msg)
+      }
       return 3
     } else if (response.data.code === 0) {
       // 操作失败
@@ -117,11 +119,22 @@ export default {
       timeout: 30000
     }).then(checkStatus).then(checkCode)
   },
-  download (url, resourceId) {
-    this.post('/ResourceApi/updateDownloadNum', {id: resourceId})
+  download (resource) {
+    let parameters
+    if (typeof resource.esId !== 'undefined') {
+      // 下载审核通过的资源
+      const result = this.post('/ResourceDownloadApi/save', {resourceId: resource.resourceId})
+      if (result === null) {
+        return
+      }
+      resource.resourceTempId = ''
+    } else {
+      resource.esId = ''
+    }
+    parameters = 'resourceId=' + resource.resourceId + '&esId=' + resource.esId + '&resourceTempId=' + resource.resourceTempId
     let iframe = document.createElement('iframe')
     iframe.style.display = 'none'
-    iframe.src = 'http://localhost:9363/ud/FileApi/download?resourceId=' + resourceId
+    iframe.src = 'http://localhost:9363/ud/FileApi/download?' + parameters
     iframe.onload = function () {
       document.body.removeChild(iframe)
     }

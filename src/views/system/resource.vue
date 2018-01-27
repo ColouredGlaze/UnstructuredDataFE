@@ -89,7 +89,7 @@ export default {
       this.chooseDissertationIdDialogVisible = true
     },
     downloadResource (resource) {
-      this.api.download('/FileApi/download', resource.id)
+      this.api.download({resourceId: resource.id, esId: resource.esId})
     },
     chooseDissertation (node) {
       this.currentChooseDissertation = node

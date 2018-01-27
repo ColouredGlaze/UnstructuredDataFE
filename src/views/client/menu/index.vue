@@ -43,7 +43,7 @@ export default {
   },
   mounted () {
     this.$router.push('/client/index/listResource')
-    this.keyword = 'pdf'
+    this.keyword = '设计'
   }
 }
 </script>

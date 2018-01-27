@@ -38,10 +38,19 @@
       :total="totalQuantity">
     </el-pagination>
   </div>
+
+  <TreeDialog
+      ref="treeDialog"
+      title="选择所属收藏夹"
+      width="30%"
+      :center="true"
+      initTreeDialogUrl="/CollectionFolderApi/getParentTree"
+      v-on:getChooseNode="getChooseNode"></TreeDialog>
 </div>
 </template>
 
 <script>
+import TreeDialog from '@/components/TreeDialog.vue'
 export default {
   data () {
     return {
@@ -49,19 +58,51 @@ export default {
       tableData: [],
       currentPage: 1,
       pageSize: 10,
-      totalQuantity: 0
+      totalQuantity: 0,
+      collectionParameters: {
+        collectionFolderId: null,
+        objId: null
+      },
+      collectOptionUrl: null,
+      chooseResource: null,
+      collectionNumChange: 0
     }
   },
   methods: {
-    async collectResource (resource) {
-      const result = await this.api.post('/CollectionApi/collectResource', {objId: resource.resourceId})
+    // 将收藏资源和取消收藏资源放在一个函数里面处理
+    async getChooseNode (chooseNode) {
+      if (chooseNode !== null) {
+        this.collectionParameters.collectionFolderId = chooseNode.id
+      } else {
+        // 收藏资源时chooseNode !== null
+        if (!this.resource.collected) {
+          this.$message.info('请选择资源所在的收藏夹')
+          return
+        }
+      }
+      const result = await this.api.post(this.collectOptionUrl, this.collectionParameters)
       if (result !== null) {
-        resource.collected = true
+        this.resource.collected = !this.resource.collected
+        this.resource.collectionNum += this.collectionNumChange
+        this.$refs.treeDialog.closeTreeDialog()
       }
     },
-    downloadResource (resource) {
-      this.api.download('/FileApi/download', resource.resourceId)
-      resource.downloadNum += 1
+    collectResource (resource) {
+      this.resource = resource
+      if (resource.collected) {
+        this.collectOptionUrl = '/CollectionApi/cancelCollectResource'
+        this.collectionNumChange = -1
+        this.getChooseNode(null)
+      } else {
+        this.$refs.treeDialog.showTreeDialog()
+        this.collectionNumChange = 1
+        this.collectOptionUrl = '/CollectionApi/collectResource'
+      }
+      this.collectionParameters.objId = resource.resourceId
+    },
+    downloadResource (resourceEs) {
+      this.api.download({resourceId: resourceEs.resourceId, esId: resourceEs.id})
+      resourceEs.downloadNum += 1
     },
     async getTableDate () {
       const result = await this.api.post('/ResourceEsApi/searchFromEs',
@@ -88,7 +129,11 @@ export default {
   },
   mounted () {
     this.keyword = this.$route.params.keyword
+    this.$refs.treeDialog.initTreeDialogData(null)
     this.getTableDate()
+  },
+  components: {
+    TreeDialog
   }
 }
 </script>
