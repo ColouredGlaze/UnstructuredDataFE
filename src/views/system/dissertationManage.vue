@@ -24,7 +24,7 @@
         <el-table-column prop="classify" label="所属分类"></el-table-column>
         <el-table-column prop="description" label="描述"></el-table-column>
         <el-table-column prop="collectionNum" label="收藏数"></el-table-column>
-        <el-table-column prop="uploadNum" label="上传数"></el-table-column>
+        <el-table-column prop="documentNum" label="文档数"></el-table-column>
         <el-table-column prop="downloadNum" label="下载数"></el-table-column>
         <el-table-column prop="creator" label="创建人"></el-table-column>
         <el-table-column prop="createTime" label="创建时间"></el-table-column>
