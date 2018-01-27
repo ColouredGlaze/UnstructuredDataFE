@@ -15,16 +15,16 @@
       </el-col>
     </el-row>
     <el-row style="margin-top: 20px;">
-      <MyTable 
+      <SearchResultTable 
         :border="true"
         :stripe="true"
         :selectable="true"
         :tableColumn="tableColumn"
         :maxHeight="570"
         :revisability="true"
-        v-on:handleModifyData="handleModifyData"        
+        v-on:handleModifyData="modifyCollectionFolderData"        
         tableSearchUrl="/CollectionFolderApi/search"
-        ref="myTable"></MyTable>
+        ref="myCollectionFolderTable"></SearchResultTable>
     </el-row>
 
     <el-dialog
@@ -37,7 +37,7 @@
         </el-form-item>
         <el-form-item label="属　于">
           <el-input v-model="collectionFolderForm.parent" placeholder="选择所属收藏夹" :disabled="true">
-            <el-button @click="chooseParentIdDialogVisible = true" slot="append" icon="el-icon-search"></el-button>
+            <el-button @click="parentTreeDialogVisible = true" slot="append" icon="el-icon-search"></el-button>
           </el-input>
         </el-form-item>
         <el-form-item label="描　述" prop="description">
@@ -50,18 +50,20 @@
       </span>
     </el-dialog>
 
-    <el-dialog title="选择所属文件夹" :visible.sync="chooseParentIdDialogVisible" width="30%" center>
-      <el-tree :data="chooseParentIdTree" @node-click="chooseParentId"></el-tree>
-      <span slot="footer">
-        <el-button @click="chooseParentIdDialogVisible = false">取 消</el-button>
-        <el-button @click="confirmParentId" type="primary">确 定</el-button>
-      </span>
-    </el-dialog>
+    <TreeDialog
+      ref="treeDialog"
+      title="选择所属收藏夹"
+      :treeDialogVisible="parentTreeDialogVisible"
+      width="30%"
+      :center="true"
+      initTreeDialogUrl="/CollectionFolderApi/getParentTree"
+      v-on:getChooseNode="getChooseNode"></TreeDialog>
   </div>
 </template>
 
 <script>
-import MyTable from '@/components/MyTable.vue'
+import SearchResultTable from '@/components/SearchResultTable.vue'
+import TreeDialog from '@/components/TreeDialog.vue'
 export default {
   data () {
     return {
@@ -73,12 +75,10 @@ export default {
         parentId: null,
         parent: null
       },
-      currentChooseParentFolder: null,
       searchParameters: {
         designation: null
       },
       tableColumn: [],
-      chooseParentIdTree: [],
       collectionFolderRules: {
         designation: [
           {required: true, message: '请输入收藏夹名称', trigger: 'blur'},
@@ -88,12 +88,24 @@ export default {
           {max: 300, message: '长度不能超过 300 个字符', trigger: 'blur'}
         ]
       },
-      chooseParentIdDialogVisible: false,
-      collectionFolderDialogVisible: false
+      collectionFolderDialogVisible: false,
+      parentTreeDialogVisible: false
     }
   },
   methods: {
-    handleModifyData (modifyData) {
+    getChooseNode (chooseNode) {
+      if (chooseNode === null) {
+        return
+      }
+      if (this.collectionFolderForm.id === chooseNode.id) {
+        this.$message.info('不能选择当前修改的收藏夹作为所属收藏夹，请选择其他收藏夹')
+        return
+      }
+      this.collectionFolderForm.parentId = chooseNode.id
+      this.collectionFolderForm.parent = chooseNode.label
+      this.parentTreeDialogVisible = false
+    },
+    modifyCollectionFolderData (modifyData) {
       this.dialogTitle = '修改收藏夹'
       this.confirmDialogUrl = '/CollectionFolderApi/update'
       this.collectionFolderForm = modifyData
@@ -109,6 +121,12 @@ export default {
       if (selectData.length === 0) {
         this.$message.info('请选择要删除的收藏夹')
         return
+      }
+      for (let i = 0; i < selectData.length; i++) {
+        if (selectData[i].resourceNum > 0) {
+          this.$message.info('请选择资源数目为 0 的收藏夹删除')
+          return
+        }
       }
       this.$confirm('此操作将会删除所选收藏夹以及属于所选收藏夹下的所有收藏夹，是否继续？', '提示', {
         confirmButtonText: '确定',
@@ -133,47 +151,26 @@ export default {
         }
       })
     },
-    chooseParentId (node) {
-      this.currentChooseParentFolder = node
-    },
-    confirmParentId () {
-      if (this.currentChooseParentFolder === null) {
-        return
-      }
-      if (this.collectionFolderForm.id === this.currentChooseParentFolder.id) {
-        this.$message.info('不能选择当前修改的收藏夹作为所属收藏夹，请选择其他收藏夹')
-        return
-      }
-      this.collectionFolderForm.parentId = this.currentChooseParentFolder.id
-      this.collectionFolderForm.parent = this.currentChooseParentFolder.label
-      this.chooseParentIdDialogVisible = false
-    },
     getTableData () {
-      this.$refs.myTable.getTableDate(this.searchParameters)
-    },
-    async initParentFolderTree () {
-      const result = await this.api.post('/CollectionFolderApi/getParentTree')
-      if (result !== null) {
-        this.chooseParentIdTree = result
-      }
+      this.$refs.myCollectionFolderTable.getTableDate(this.searchParameters)
     },
     init () {
+      this.tableColumn = [
+        {prop: 'designation', label: '名称', width: '190', sot: true},
+        {prop: 'resourceNum', label: '资源数目', width: '90', sot: true},
+        {prop: 'parent', label: '所属收藏夹', width: '190', sot: true},
+        {prop: 'description', label: '描述', sot: true},
+        {prop: 'createTime', label: '创建时间', width: '159'}
+      ]
       this.getTableData()
-      this.initParentFolderTree()
+      this.$refs.treeDialog.initTreeDialogData(null)
     }
   },
   mounted () {
-    this.tableColumn = [
-      {prop: 'designation', label: '名称', width: '190', sot: true},
-      {prop: 'resourceNum', label: '资源数目', width: '90', sot: true},
-      {prop: 'parent', label: '所属收藏夹', width: '190', sot: true},
-      {prop: 'description', label: '描述', sot: true},
-      {prop: 'createTime', label: '创建时间', width: '159'}
-    ]
     this.init()
   },
   components: {
-    MyTable
+    SearchResultTable, TreeDialog
   }
 }
 </script>

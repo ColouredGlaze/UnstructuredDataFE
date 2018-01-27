@@ -28,18 +28,18 @@
       </template>
     </el-table-column>
   </el-table>
-    <div class="pagination-container">
-      <el-pagination
-        id="pagination"
-        background
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="baseParameters.currentPage"
-        :page-sizes="[10, 20, 30, 40, 50]"
-        :page-size="baseParameters.pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="totalQuantity">
-      </el-pagination>
+  <div class="pagination-container">
+    <el-pagination
+      id="pagination"
+      background
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="baseParameters.currentPage"
+      :page-sizes="[10, 20, 30, 40, 50]"
+      :page-size="baseParameters.pageSize"
+      :total="totalQuantity"
+      layout="total, sizes, prev, pager, next, jumper">
+    </el-pagination>
   </div>
 </div>
 </template>
