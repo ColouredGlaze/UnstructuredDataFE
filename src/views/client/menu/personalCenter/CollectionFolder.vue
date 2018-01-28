@@ -114,7 +114,7 @@ export default {
       this.collectionFolderDialogVisible = true
     },
     deleteCollectionFolder () {
-      const selectData = this.$refs.myTable.getSelectData()
+      const selectData = this.$refs.myCollectionFolderTable.getSelectData()
       if (selectData.length === 0) {
         this.$message.info('请选择要删除的收藏夹')
         return

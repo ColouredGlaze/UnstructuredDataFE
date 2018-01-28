@@ -17,7 +17,7 @@
     <el-tabs type="border-card" style="min-height: 682px;">
       <el-tab-pane>
         <span slot="label"><i class="el-icon-star-on"></i> 我的收藏</span>
-        <MyCollection></MyCollection>
+        <MyCollection v-on:refreshUserInfo="initUserInfo"></MyCollection>
       </el-tab-pane>
       <el-tab-pane>
         <span slot="label"><i class="el-icon-menu"></i> 收藏夹</span>

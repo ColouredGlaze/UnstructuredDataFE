@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="选择所属收藏夹" :visible.sync="treeDialogVisible" width="30%" center :close-on-press-escape="closeOnPressEscape">
+  <el-dialog :title="title" :visible.sync="treeDialogVisible" width="30%" center :close-on-press-escape="closeOnPressEscape">
     <el-tree :data="treeDialogData" @node-click="nodeClick"></el-tree>
       <span slot="footer">
         <el-button v-if="showCancelButton" @click="closeTreeDialog">取 消</el-button>

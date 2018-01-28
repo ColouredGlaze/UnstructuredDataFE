@@ -25,13 +25,17 @@
       v-else
       :label="item.label"
       :width="item.width">
-      <template slot-scope="scope" v-for="operation in item.operations">
-        <el-button v-if="operation === 'modify'" 
-          :key="operation"
+      <template slot-scope="scope">
+        <el-button v-if="operationModify"
           icon="el-icon-edit"
           type="primary"
           size="small"
           @click="handleModifyData(scope.row)">修 改</el-button>
+        <el-button v-if="operationDownload"
+          icon="el-icon-download"
+          type="primary"
+          size="small"
+          @click="download(scope.row)">下 载</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -55,13 +59,16 @@
 export default {
   data () {
     return {
+      operationDownload: false,
+      operationModify: false,
       tableData: [],
       selectData: [],
       baseParameters: {
         currentPage: 1,
         pageSize: 10
       },
-      totalQuantity: 0
+      totalQuantity: 0,
+      inited: false
     }
   },
   methods: {
@@ -72,6 +79,30 @@ export default {
         this.totalQuantity = result.totalElements
         this.tableData = result.content
       }
+      if (!this.inited) {
+        this.initTableOperation()
+      }
+    },
+    // 初始化表格操作列
+    initTableOperation () {
+      for (let i = 0; i < this.tableColumn.length; i++) {
+        if (this.tableColumn[i].isOperation) {
+          for (let j = 0; j < this.tableColumn[i].operations.length; j++) {
+            switch (this.tableColumn[i].operations[j]) {
+              case 'modify':
+                this.operationModify = true
+                break
+              case 'download':
+                this.operationDownload = true
+                break
+              default:
+                break
+            }
+          }
+          break
+        }
+      }
+      this.inited = true
     },
     handleSizeChange (val) {
       this.baseParameters.pageSize = val
@@ -86,6 +117,11 @@ export default {
     },
     getSelectData () {
       return this.selectData
+    }
+  },
+  watch: {
+    tableColumn (val) {
+      this.inited = false
     }
   },
   props: {
@@ -112,6 +148,9 @@ export default {
       default: true
     },
     handleModifyData: {
+      type: Function
+    },
+    download: {
       type: Function
     }}
 }

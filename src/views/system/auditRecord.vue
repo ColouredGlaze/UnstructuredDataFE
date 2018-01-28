@@ -3,11 +3,15 @@
     <div class="table-container">
       <el-table :data="tableData" ref="tableData" style="width: 100%" max-height="730" border stripe>
         <el-table-column prop="resourceTempDesignation" label="审核资源名" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="auditor" label="审核人"></el-table-column>
         <el-table-column prop="operation" label="审核操作"></el-table-column>
         <el-table-column prop="status" label="资源审核状态"></el-table-column>
+        <el-table-column prop="auditor" label="审核人"></el-table-column>        
         <el-table-column prop="remark" label="备注"></el-table-column>
-        <el-table-column prop="auditTime" label="审核时间"></el-table-column>
+        <el-table-column prop="auditTime" label="审核时间">
+          <template slot-scope="scope">
+            <span v-if="scope.row.auditTime != scope.row.createTime">{{scope.row.auditTime}}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="createTime" label="创建时间"></el-table-column>
       </el-table>
     </div>
