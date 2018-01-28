@@ -8,6 +8,7 @@
       </div>
       <div>
         <span class="user-info user-name">用户名：{{userInfo.userName}}</span>
+        <span class="user-info">上传资源数：{{userInfo.uploadNum}}个</span>
         <span class="user-info">资源收藏数：{{userInfo.collectNum}}个</span>
         <span class="user-info">资源下载次数：{{userInfo.downloadNum}}次</span>
       </div>

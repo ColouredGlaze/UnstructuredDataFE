@@ -149,7 +149,7 @@ export default {
       })
     },
     getTableData () {
-      this.$refs.myCollectionFolderTable.getTableDate(this.searchParameters)
+      this.$refs.myCollectionFolderTable.getTableData(this.searchParameters)
     },
     init () {
       this.tableColumn = [

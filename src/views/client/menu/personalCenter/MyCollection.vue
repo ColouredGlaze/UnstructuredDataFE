@@ -62,7 +62,7 @@ export default {
       this.$emit('refreshUserInfo')
     },
     getTableData () {
-      this.$refs.myCollectionTable.getTableDate(this.searchParameters)
+      this.$refs.myCollectionTable.getTableData(this.searchParameters)
     },
     modifyCollectionData (modifyData) {
       this.collectionForm = modifyData

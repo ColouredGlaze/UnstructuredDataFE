@@ -72,7 +72,7 @@ export default {
     }
   },
   methods: {
-    async getTableDate (extensionParameters) {
+    async getTableData (extensionParameters) {
       let searchParameters = $.extend({}, this.baseParameters, extensionParameters)
       const result = await this.api.post(this.tableSearchUrl, searchParameters)
       if (result != null) {
@@ -106,11 +106,11 @@ export default {
     },
     handleSizeChange (val) {
       this.baseParameters.pageSize = val
-      this.getTableDate()
+      this.getTableData()
     },
     handleCurrentChange (val) {
       this.baseParameters.currentPage = val
-      this.getTableDate()
+      this.getTableData()
     },
     handleSelectionChange (selection) {
       this.selectData = selection
