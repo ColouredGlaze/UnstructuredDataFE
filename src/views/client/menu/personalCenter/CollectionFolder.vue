@@ -51,7 +51,6 @@
       ref="treeDialog"
       title="选择所属收藏夹"
       width="30%"
-      :center="true"
       initTreeDialogUrl="/CollectionFolderApi/getParentTree"
       v-on:getChooseNode="getChooseNode"></TreeDialog>
   </div>

@@ -80,7 +80,7 @@ export default {
     },
     center: {
       type: Boolean,
-      default: false
+      default: true
     },
     initTreeDialogUrl: {
       type: String,
