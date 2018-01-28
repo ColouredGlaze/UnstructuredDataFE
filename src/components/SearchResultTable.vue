@@ -13,7 +13,8 @@
       width="34">
     </el-table-column>
     <el-table-column 
-      v-for="item in tableColumn" 
+      v-for="item in tableColumn"
+      v-if="!item.isOperation"
       :key="item.prop" 
       :prop="item.prop"
       :label="item.label"
@@ -21,10 +22,16 @@
       :show-overflow-tooltip="item.sot">
     </el-table-column>
     <el-table-column
-      :v-if="revisability"
-      width="96">
-      <template slot-scope="scope">
-        <el-button v-if="revisability" type="primary" icon="el-icon-edit" @click="handleModify(scope.row)" size="small">修 改</el-button>
+      v-else
+      :label="item.label"
+      :width="item.width">
+      <template slot-scope="scope" v-for="operation in item.operations">
+        <el-button v-if="operation === 'modify'" 
+          :key="operation"
+          icon="el-icon-edit"
+          type="primary"
+          size="small"
+          @click="handleModify(scope.row)">修 改</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -84,7 +91,29 @@ export default {
       return this.selectData
     }
   },
-  props: ['tableColumn', 'tableSearchUrl', 'maxHeight', 'selectable', 'border', 'stripe', 'revisability']
+  props: {
+    tableColumn: {
+      type: Array
+    },
+    tableSearchUrl: {
+      type: String,
+      default: null
+    },
+    maxHeight: {
+      type: Number
+    },
+    selectable: {
+      type: Boolean,
+      default: false
+    },
+    border: {
+      type: Boolean,
+      default: true
+    },
+    stripe: {
+      type: Boolean,
+      default: true
+    }}
 }
 </script>
 

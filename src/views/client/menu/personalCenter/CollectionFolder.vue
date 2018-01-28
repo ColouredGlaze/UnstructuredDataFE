@@ -15,13 +15,10 @@
       </el-col>
     </el-row>
     <el-row style="margin-top: 20px;">
-      <SearchResultTable 
-        :border="true"
-        :stripe="true"
+      <SearchResultTable
         :selectable="true"
         :tableColumn="tableColumn"
         :maxHeight="570"
-        :revisability="true"
         v-on:handleModifyData="modifyCollectionFolderData"        
         tableSearchUrl="/CollectionFolderApi/search"
         ref="myCollectionFolderTable"></SearchResultTable>
@@ -161,7 +158,8 @@ export default {
         {prop: 'resourceNum', label: '资源数目', width: '90', sot: true},
         {prop: 'parent', label: '所属收藏夹', width: '190', sot: true},
         {prop: 'description', label: '描述', sot: true},
-        {prop: 'createTime', label: '创建时间', width: '159'}
+        {prop: 'createTime', label: '创建时间', width: '159'},
+        {prop: 'operation', label: '操作', width: '96', isOperation: true, operations: ['modify']}
       ]
       this.getTableData()
       this.$refs.treeDialog.initTreeDialogData(null)
