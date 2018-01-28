@@ -31,7 +31,7 @@
           icon="el-icon-edit"
           type="primary"
           size="small"
-          @click="handleModify(scope.row)">修 改</el-button>
+          @click="handleModifyData(scope.row)">修 改</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -84,9 +84,6 @@ export default {
     handleSelectionChange (selection) {
       this.selectData = selection
     },
-    handleModify (data) {
-      this.$emit('handleModifyData', data)
-    },
     getSelectData () {
       return this.selectData
     }
@@ -113,6 +110,9 @@ export default {
     stripe: {
       type: Boolean,
       default: true
+    },
+    handleModifyData: {
+      type: Function
     }}
 }
 </script>

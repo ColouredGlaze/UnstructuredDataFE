@@ -19,7 +19,7 @@
         :selectable="true"
         :tableColumn="tableColumn"
         :maxHeight="570"
-        v-on:handleModifyData="modifyCollectionFolderData"        
+        :handleModifyData="modifyCollectionFolderData"        
         tableSearchUrl="/CollectionFolderApi/search"
         ref="myCollectionFolderTable"></SearchResultTable>
     </el-row>
