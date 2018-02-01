@@ -14,7 +14,7 @@
     </el-table-column>
     <el-table-column 
       v-for="item in tableColumn"
-      v-if="!item.isOperation"
+      v-if="!item.showContent && !item.isOperation"
       :key="item.prop" 
       :prop="item.prop"
       :label="item.label"
