@@ -1,7 +1,7 @@
 <template>
 <div class="system">
   <div class="menu-container">
-    <el-menu :router="true" background-color="#2d3a4b" text-color="#fff" active-text-color="#ffd04b" style="border-right: 0px">
+    <el-menu :router="true" :default-active="activeIndex" background-color="#2d3a4b" text-color="#fff" active-text-color="#ffd04b" style="border-right: 0px">
       <el-menu-item index="/system/userManage">
         <i class="icon-menu-item"><icon name="userManage" scale="2"></icon></i>
         <span slot="title">用户管理</span>
@@ -37,17 +37,8 @@
     </el-menu>
   </div>
   <div class="main-container">
-    <!-- <div class="breadcrumb">
-      <el-breadcrumb separator="/" >
-        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item>活动管理</el-breadcrumb-item>
-        <el-breadcrumb-item>活动列表</el-breadcrumb-item>
-        <el-breadcrumb-item>活动详情</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div> -->
     <div class="router-view">
       <router-view></router-view>
-      <!-- <div v-if="inter">欢迎使用非结构化管理系统</div> -->
     </div>
   </div>
 </div>
@@ -58,7 +49,7 @@ export default {
   name: 'Main',
   data () {
     return {
-      // inter: true
+      activeIndex: '/system/userManage'
     }
   },
   methods: {},

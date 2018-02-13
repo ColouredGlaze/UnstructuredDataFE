@@ -17,7 +17,7 @@
       </el-col>
     </el-row>
     <div class="table-container">
-      <el-table :data="tableData" ref="tableData" style="width: 100%" max-height="730" @select="tableSelect" @select-all="tableSelect" border stripe>
+      <el-table :data="tableData" ref="tableData" style="width: 100%" max-height="730" height="730" @select="tableSelect" @select-all="tableSelect" border stripe>
         <el-table-column type="selection"></el-table-column>
         <el-table-column prop="id" label="数据字典ID" show-overflow-tooltip></el-table-column>
         <el-table-column prop="designation" label="名称"></el-table-column>

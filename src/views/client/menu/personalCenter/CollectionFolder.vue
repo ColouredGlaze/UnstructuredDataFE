@@ -18,7 +18,7 @@
       <SearchResultTable
         :selectable="true"
         :tableColumn="tableColumn"
-        :maxHeight="570"
+        :height="486"
         :handleModifyData="modifyCollectionFolderData"        
         tableSearchUrl="/CollectionFolderApi/search"
         ref="myCollectionFolderTable"></SearchResultTable>

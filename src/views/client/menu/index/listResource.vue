@@ -28,8 +28,7 @@ export default {
   },
   methods: {
     resourceDetail (id) {
-      console.log(id)
-      this.$emit('clientIndexRouter', 1, id)
+      this.$emit('indexRouterMethods', 'resourceDetail', id)
     },
     async initContent () {
       const result = await this.api.post('/ResourceApi/getTopFiveByDissertation')
@@ -71,7 +70,6 @@ export default {
 .item {
   margin-bottom: 10px;
 }
-
 .clearfix:before,
 .clearfix:after {
   display: table;

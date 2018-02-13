@@ -16,6 +16,7 @@ import ClientIndex from '@/views/client/menu/index'
 import ListResource from '@/views/client/menu/index/listResource'
 import SearchResourceResult from '@/views/client/menu/index/searchResourceResult'
 import PersonalCenter from '@/views/client/menu/personalCenter'
+import ResourceDetail from '@/views/client/resourceDetail'
 Vue.use(Router)
 
 export default new Router({
@@ -31,6 +32,11 @@ export default new Router({
       name: 'Client',
       component: Client,
       children: [
+        {
+          path: 'resourceDetail/:resourceId',
+          name: 'ResourceDetail',
+          component: ResourceDetail
+        },
         {
           path: 'uploadResource',
           name: 'UploadResource',

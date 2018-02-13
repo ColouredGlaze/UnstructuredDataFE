@@ -3,6 +3,7 @@
   <el-table
     :data="tableData"
     :max-height="maxHeight"
+    :height="height"
     :border="border"
     :stripe="stripe"
     @selection-change="handleSelectionChange"
@@ -131,6 +132,9 @@ export default {
     tableSearchUrl: {
       type: String,
       default: null
+    },
+    height: {
+      type: Number
     },
     maxHeight: {
       type: Number

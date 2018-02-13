@@ -11,7 +11,7 @@
     <el-row style="margin-top: 20px;">
       <SearchResultTable
         :tableColumn="tableColumn"
-        :maxHeight="570"
+        :height="486"
         tableSearchUrl="/ResourceDownloadApi/search"
         ref="downloadResourceTable"></SearchResultTable>
     </el-row>
@@ -38,7 +38,7 @@ export default {
         {prop: 'resourceName', label: '资源名称', sot: true},
         {prop: 'classify', label: '所属分类', sot: true},
         {prop: 'dissertation', label: '所属专题', sot: true},
-        {prop: 'collected', label: '收藏情况', width: '77', sot: true},
+        {prop: 'collected', label: '收藏状态', width: '77', sot: true},
         {prop: 'createTime', label: '下载时间', width: '159'}
       ]
       this.getTableData()

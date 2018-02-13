@@ -10,7 +10,7 @@
       </el-col>
       <el-col :span="6">&nbsp;</el-col>
     </el-row>
-    <router-view v-on:clientIndexRouter="routerMethods"></router-view>
+    <router-view v-on:indexRouterMethods="indexRouterMethods"></router-view>
   </div>
 </template>
 
@@ -30,8 +30,14 @@ export default {
       }
       this.$router.push('/client/index/searchResourceResult/' + this.keyword)
     },
-    routerMethods (tag, param) {
-      console.log(tag + '------' + param)
+    indexRouterMethods (tag, param) {
+      switch (tag) {
+        case 'resourceDetail':
+          this.$router.push('/client/resourceDetail/' + param)
+          break
+        default:
+          break
+      }
     }
   },
   watch: {

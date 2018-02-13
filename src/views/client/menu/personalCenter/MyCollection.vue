@@ -15,7 +15,7 @@
       <SearchResultTable
         :selectable="true"
         :tableColumn="tableColumn"
-        :maxHeight="570"
+        :height="486"
         :handleModifyData="modifyCollectionData"
         :download="download"
         tableSearchUrl="/CollectionApi/search"

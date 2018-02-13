@@ -1,7 +1,7 @@
 <template>
   <div class="dissertation-manage">
     <div class="table-container">
-      <el-table :data="tableData" ref="tableData" style="width: 100%" max-height="730" border stripe>
+      <el-table :data="tableData" ref="tableData" style="width: 100%" max-height="730" height="730" border stripe>
         <el-table-column prop="userName" label="用户名" show-overflow-tooltip></el-table-column>
         <el-table-column prop="userType" label="用户类型"></el-table-column>
         <el-table-column prop="status" label="用户状态"></el-table-column>

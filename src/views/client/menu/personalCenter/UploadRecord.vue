@@ -11,7 +11,7 @@
     <el-row style="margin-top: 20px;">
       <SearchResultTable
         :tableColumn="tableColumn"
-        :maxHeight="570"
+        :height="486"
         tableSearchUrl="/ResourceUploadApi/search"
         ref="uploadRecordTable"></SearchResultTable>
     </el-row>
