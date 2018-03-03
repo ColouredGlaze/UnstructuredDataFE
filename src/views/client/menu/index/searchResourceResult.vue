@@ -8,7 +8,7 @@
     <el-table-column label="资源">
       <template slot-scope="scope">
         <el-row class="designation">
-          <a><span v-html="scope.row.designation"></span></a>
+          <a @click="resourceDetail(scope.row)"><span v-html="scope.row.designation"></span></a>
           <span class="extend-option" @click="downloadResource(scope.row)"><icon name="download" scale="2"></icon></span>
           <span class="extend-option" @click="collectResource(scope.row)">
             <icon v-if="scope.row.collected" name="isCollected" scale="2"></icon>
@@ -69,6 +69,9 @@ export default {
     }
   },
   methods: {
+    resourceDetail (resource) {
+      this.$emit('indexRouterMethods', 'resourceDetail', resource.resourceId)
+    },
     // 将收藏资源和取消收藏资源放在一个函数里面处理
     async getChooseNode (chooseNode) {
       if (chooseNode !== null) {

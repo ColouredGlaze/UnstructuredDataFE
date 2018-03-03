@@ -3,7 +3,7 @@
     <el-col :span="10">&nbsp;</el-col>
       <el-col :span="4">
         <div class="title-container">
-          <h3 class="title">非结构化数据共享</h3>
+          <h3 class="title">非结构化资源共享与管理</h3>
         </div>
         <div class="login-form">
           <el-form ref="form" :model="loginForm">
